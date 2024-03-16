@@ -5,7 +5,14 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MooveToken is ERC721, Ownable {
-    address private _owner;
+    event NFTVehicleCreated(string indexed name, string indexed model);
+    event NFTVehicleBuyed(uint256 indexed idVehicle, address indexed owner);
+    event NFTVehicleTransferred(
+        uint256 idVehicle,
+        address indexed from,
+        address indexed to
+    );
+    event NFTAuctionsVehicles(string indexed name, string indexed model);
 
     struct Vehicle {
         uint256 id;
@@ -16,10 +23,13 @@ contract MooveToken is ERC721, Ownable {
         address owner;
     }
 
+    address private _owner;
+
     mapping(uint256 => Vehicle) public detailsVehicle;
     mapping(uint256 => bool) public availableVehicle;
 
     uint256[] public allVehicle;
+    uint256[] public auctionsVehicles;
 
     constructor(
         string memory _nameToken,
@@ -45,6 +55,27 @@ contract MooveToken is ERC721, Ownable {
         availableVehicle[_id] = true;
         allVehicle.push(_id);
         _safeMint(msg.sender, _id);
+        emit NFTVehicleCreated(_name, _model);
+    }
+
+    function addVehicleAuctions(
+        uint256 _id,
+        string memory _name,
+        string memory _model,
+        uint256 _priceVehicle
+    ) external onlyOwner {
+        detailsVehicle[_id] = Vehicle({
+            id: _id,
+            name: _name,
+            model: _model,
+            priceVehicle: _priceVehicle,
+            available: true,
+            owner: msg.sender
+        });
+        availableVehicle[_id] = true;
+        auctionsVehicles.push(_id);
+        _safeMint(msg.sender, _id);
+        emit NFTAuctionsVehicles(_name, _model);
     }
 
     function buyNFTVehicle(uint256 _idVehicle) external payable {
@@ -78,6 +109,7 @@ contract MooveToken is ERC721, Ownable {
 
         detailsVehicle[_idVehicle].available = false;
         availableVehicle[_idVehicle] = false;
+        emit NFTVehicleBuyed(_idVehicle, msg.sender);
     }
 
     function transferFrom(
@@ -87,5 +119,6 @@ contract MooveToken is ERC721, Ownable {
     ) public override {
         super.transferFrom(_from, _to, _tokenId);
         detailsVehicle[_tokenId].owner = _to;
+        emit NFTVehicleTransferred(_tokenId, _from, _to);
     }
 }

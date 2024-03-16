@@ -65,6 +65,42 @@ describe("MooveToken", () => {
       expect(await MooveToken.allVehicle(0)).to.equal(12345);
     });
   });
+  describe("Testing addVehicleAuctions function", () => {
+    it("Should revert if the sender is not the Owner", async () => {
+      const { otherAccount, MooveToken } = await loadFixture(deploy);
+
+      await expect(
+        MooveToken.connect(otherAccount).addVehicleAuctions(
+          12345,
+          "Bike",
+          "Electric",
+          ethers.parseEther("0.1")
+        )
+      ).to.be.reverted;
+    });
+    it("Should add the vehicle and generete the ERC721 token", async () => {
+      const { owner, MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicleAuctions(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("0.1")
+      );
+
+      expect(await MooveToken.availableVehicle(12345)).to.equal(true);
+      expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
+        BigInt(12345),
+        "Bike",
+        "Electric",
+        ethers.parseEther("0.1"),
+        true,
+        owner.address,
+      ]);
+      expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
+      expect(await MooveToken.auctionsVehicles(0)).to.equal(12345);
+    });
+  });
   describe("Testing buyNFTVehicle function", () => {
     it("Should revert if the vehicle doesn't exist", async () => {
       const { MooveToken } = await loadFixture(deploy);
