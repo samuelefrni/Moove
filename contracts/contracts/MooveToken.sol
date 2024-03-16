@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MooveToken is ERC721, Ownable {
-    address s_owner;
+    address private _owner;
 
     struct Vehicle {
         uint256 id;
@@ -25,7 +25,7 @@ contract MooveToken is ERC721, Ownable {
         string memory _nameToken,
         string memory _symbolToken
     ) ERC721(_nameToken, _symbolToken) Ownable(msg.sender) {
-        s_owner = msg.sender;
+        _owner = msg.sender;
     }
 
     function addVehicle(
@@ -40,11 +40,11 @@ contract MooveToken is ERC721, Ownable {
             model: _model,
             priceVehicle: _priceVehicle,
             available: true,
-            owner: address(this)
+            owner: msg.sender
         });
         availableVehicle[_id] = true;
         allVehicle.push(_id);
-        _safeMint(address(this), _id);
+        _safeMint(msg.sender, _id);
     }
 
     function buyNFTVehicle(uint256 _idVehicle) external payable {
@@ -64,11 +64,20 @@ contract MooveToken is ERC721, Ownable {
 
         require(found == true, "Vehicle doesn't found");
         require(
+            detailsVehicle[_idVehicle].owner == _owner,
+            "The vehicle has already been taken by another user"
+        );
+        require(
             msg.value >= priceVehicle,
             "Doesn't have enough funds to buy this vehicle"
         );
 
+        _approve(msg.sender, _idVehicle, ownerVehicle);
+
         transferFrom(ownerVehicle, msg.sender, _idVehicle);
+
+        detailsVehicle[_idVehicle].available = false;
+        availableVehicle[_idVehicle] = false;
     }
 
     function transferFrom(
@@ -77,17 +86,6 @@ contract MooveToken is ERC721, Ownable {
         uint256 _tokenId
     ) public override {
         super.transferFrom(_from, _to, _tokenId);
-    }
-
-    function onERC721Received(
-        address,
-        address,
-        uint256,
-        bytes memory
-    ) external pure returns (bytes4) {
-        return
-            bytes4(
-                keccak256("onERC721Received(address,address,uint256,bytes)")
-            );
+        detailsVehicle[_tokenId].owner = _to;
     }
 }
