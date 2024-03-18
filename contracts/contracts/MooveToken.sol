@@ -61,14 +61,13 @@ contract MooveToken is ERC721, Ownable {
     function addVehicleAuctions(
         uint256 _id,
         string memory _name,
-        string memory _model,
-        uint256 _priceVehicle
+        string memory _model
     ) external onlyOwner {
         detailsVehicle[_id] = Vehicle({
             id: _id,
             name: _name,
             model: _model,
-            priceVehicle: _priceVehicle,
+            priceVehicle: 0,
             available: true,
             owner: msg.sender
         });

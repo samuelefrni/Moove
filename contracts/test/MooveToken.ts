@@ -73,27 +73,21 @@ describe("MooveToken", () => {
         MooveToken.connect(otherAccount).addVehicleAuctions(
           12345,
           "Bike",
-          "Electric",
-          ethers.parseEther("0.1")
+          "Electric"
         )
       ).to.be.reverted;
     });
     it("Should add the vehicle and generete the ERC721 token", async () => {
       const { owner, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicleAuctions(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("0.1")
-      );
+      await MooveToken.addVehicleAuctions(12345, "Bike", "Electric");
 
       expect(await MooveToken.availableVehicle(12345)).to.equal(true);
       expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
         BigInt(12345),
         "Bike",
         "Electric",
-        ethers.parseEther("0.1"),
+        0,
         true,
         owner.address,
       ]);
