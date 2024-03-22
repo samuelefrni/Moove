@@ -18,7 +18,7 @@ const Home = () => {
 
   return (
     <React.StrictMode>
-      {account.status == "disconnected" && hamburgerMenuIsOpen == false && (
+      {account.status == "disconnected" && !hamburgerMenuIsOpen && (
         <div>
           <div className="relative overflow-hidden min-h-[600px]">
             <Navbar
@@ -91,12 +91,10 @@ const Home = () => {
       )}
       {account.status == "connected" ||
         (hamburgerMenuIsOpen && (
-          <div>
-            <HamburgerMenu
-              hamburgerMenuIsOpen={hamburgerMenuIsOpen}
-              setHamburgerMenuIsOpen={setHamburgerMenuIsOpen}
-            />
-          </div>
+          <HamburgerMenu
+            hamburgerMenuIsOpen={hamburgerMenuIsOpen}
+            setHamburgerMenuIsOpen={setHamburgerMenuIsOpen}
+          />
         ))}
     </React.StrictMode>
   );

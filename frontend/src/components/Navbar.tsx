@@ -10,18 +10,27 @@ const Navbar: React.FC<INavbar> = ({
 }) => {
   return (
     <React.StrictMode>
-      <nav className="flex justify-between p-5 text-white xl:p-8">
-        <h1 className="z-10 text-3xl bg-transparent xl:text-5xl">Moove</h1>
+      <nav>
         {hamburgerMenuIsOpen ? (
-          <IoMdClose
-            className="z-10 text-4xl bg-transparent cursor-pointer xl:text-6xl"
-            onClick={() => setHamburgerMenuIsOpen((prevState) => !prevState)}
-          />
+          <div className="flex justify-between p-5 xl:p-8">
+            <h1 className="z-10 font-[600] text-3xl bg-transparent xl:text-5xl">
+              Moove
+            </h1>
+            <IoMdClose
+              className="z-10 text-4xl bg-transparent cursor-pointer xl:text-6xl"
+              onClick={() => setHamburgerMenuIsOpen((prevState) => !prevState)}
+            />
+          </div>
         ) : (
-          <IoIosMenu
-            className="z-10 text-4xl bg-transparent cursor-pointer xl:text-6xl"
-            onClick={() => setHamburgerMenuIsOpen((prevState) => !prevState)}
-          />
+          <div className="flex justify-between text-white p-5 xl:p-8">
+            <h1 className="z-10 font-[600] text-3xl bg-transparent xl:text-5xl">
+              Moove
+            </h1>
+            <IoIosMenu
+              className="z-10 text-4xl bg-transparent cursor-pointer xl:text-6xl"
+              onClick={() => setHamburgerMenuIsOpen((prevState) => !prevState)}
+            />
+          </div>
         )}
       </nav>
     </React.StrictMode>
