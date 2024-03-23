@@ -1,34 +1,44 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../state/store";
+import { setHamburgerMenuIsOpen } from "../state/navbar/navbarSlice";
 
-import { INavbar } from "../interface";
 import { IoIosMenu } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import { Link } from "react-router-dom";
 
-const Navbar: React.FC<INavbar> = ({
-  hamburgerMenuIsOpen,
-  setHamburgerMenuIsOpen,
-}) => {
+const Navbar = () => {
+  const hamburgerMenuIsOpen = useSelector(
+    (state: RootState) => state.navbar.hamburgerMenuIsOpen
+  );
+
+  const dispatch = useDispatch();
+
   return (
     <React.StrictMode>
       <nav>
         {hamburgerMenuIsOpen ? (
           <div className="flex justify-between p-5 xl:p-8">
-            <h1 className="z-10 font-[600] text-3xl bg-transparent xl:text-5xl">
-              Moove
+            <h1 className="z-10 font-[600] text-5xl bg-transparent xl:text-6xl">
+              <Link to={"/"} onClick={() => dispatch(setHamburgerMenuIsOpen())}>
+                Moove
+              </Link>
             </h1>
             <IoMdClose
-              className="z-10 text-4xl bg-transparent cursor-pointer xl:text-6xl"
-              onClick={() => setHamburgerMenuIsOpen((prevState) => !prevState)}
+              className="z-10 text-5xl bg-transparent cursor-pointer xl:text-6xl"
+              onClick={() => dispatch(setHamburgerMenuIsOpen())}
             />
           </div>
         ) : (
           <div className="flex justify-between text-white p-5 xl:p-8">
-            <h1 className="z-10 font-[600] text-3xl bg-transparent xl:text-5xl">
-              Moove
+            <h1 className="z-10 font-[600] text-5xl bg-transparent xl:text-6xl">
+              <Link to={"/"} onClick={() => dispatch(setHamburgerMenuIsOpen())}>
+                Moove
+              </Link>
             </h1>
             <IoIosMenu
-              className="z-10 text-4xl bg-transparent cursor-pointer xl:text-6xl"
-              onClick={() => setHamburgerMenuIsOpen((prevState) => !prevState)}
+              className="z-10 text-5xl bg-transparent cursor-pointer xl:text-6xl"
+              onClick={() => dispatch(setHamburgerMenuIsOpen())}
             />
           </div>
         )}

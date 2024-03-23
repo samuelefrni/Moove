@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 
 import Navbar from "./Navbar";
-import { IHamburgerMenu } from "../interface";
 
-const HamburgerMenu: React.FC<IHamburgerMenu> = ({
-  hamburgerMenuIsOpen,
-  setHamburgerMenuIsOpen,
-}) => {
+const HamburgerMenu = () => {
   const [expandItem, setExpandItem] = useState<string | null>();
 
   const handleExpand = (itemName: string) => {
@@ -20,103 +16,70 @@ const HamburgerMenu: React.FC<IHamburgerMenu> = ({
   return (
     <React.StrictMode>
       <div>
-        <Navbar
-          hamburgerMenuIsOpen={hamburgerMenuIsOpen}
-          setHamburgerMenuIsOpen={setHamburgerMenuIsOpen}
-        />
-        <ul className="border border-solid border-black flex flex-col px-10 font-[600] min-h-[600px] bg-white">
-          <li className="text-3xl p-3">
-            <div className="flex">
-              <span className="">Su di noi</span>
-              <button
-                className="ml-auto"
-                onClick={() => handleExpand("Su di noi")}
-              >
-                ↓
-              </button>
+        <ul className="flex flex-col font-[600] min-h-[600px]">
+          <li className="text-3xl p-10 xl:text-4xl xl:p-15">
+            <div className="flex justify-between">
+              <span>Su di noi</span>
+              <button onClick={() => handleExpand("Su di noi")}>↓</button>
             </div>
             {expandItem == "Su di noi" && (
-              <p className="text-sm text-justify font-[400]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
-                sint, rerum corrupti soluta tenetur autem, modi molestiae
-                numquam quibusdam tempore nemo voluptatem debitis
-                necessitatibus! Officia odit ut debitis adipisci provident!
+              <p className="text-[18px] text-justify font-[400] my-2 xl:text-[22px]">
+                Moove è un’azienda leader nella micro mobilità condivisa. I loro
+                mezzi sono disponibili in 20 città europee.
               </p>
             )}
           </li>
-          <li className="text-3xl p-3">
-            <div className="flex">
-              <span className="">Perchè Moove</span>
-              <button
-                className="ml-auto"
-                onClick={() => handleExpand("Perchè Moove")}
-              >
-                ↓
-              </button>
+          <li className="text-3xl p-10 xl:text-4xl xl:p-15">
+            <div className="flex justify-between">
+              <span>Perchè Moove</span>
+              <button onClick={() => handleExpand("Perchè Moove")}>↓</button>
             </div>
             {expandItem == "Perchè Moove" && (
-              <p className="text-sm text-justify font-[400]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
-                sint, rerum corrupti soluta tenetur autem, modi molestiae
-                numquam quibusdam tempore nemo voluptatem debitis
-                necessitatibus! Officia odit ut debitis adipisci provident!
+              <p className="text-[18px] text-justify font-[400] my-2 xl:text-[22px]">
+                Moove è un'azienda all'avanguardia che non solo si impegna a
+                fornire soluzioni di mobilità condivisa sostenibili, ma è anche
+                pioniera nell'adozione delle tecnologie emergenti nel settore
+                della blockchain e del web3. Attraverso l'utilizzo di Ethereum e
+                smart contract, Moove ha implementato soluzioni innovative per
+                migliorare l'esperienza dei suoi utenti e garantire una maggiore
+                trasparenza e sicurezza nelle transazioni.
               </p>
             )}
           </li>
-          <li className="text-3xl p-3">
-            <div className="flex">
-              <span className="">Veicoli</span>
-              <button
-                className="ml-auto"
-                onClick={() => handleExpand("Veicoli")}
-              >
-                ↓
-              </button>
+          <li className="text-3xl p-10 xl:text-4xl xl:p-15">
+            <div className="flex justify-between">
+              <span>Veicoli</span>
+              <button onClick={() => handleExpand("Veicoli")}>↓</button>
             </div>
             {expandItem == "Veicoli" && (
-              <p className="text-sm text-justify font-[400]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
-                sint, rerum corrupti soluta tenetur autem, modi molestiae
-                numquam quibusdam tempore nemo voluptatem debitis
-                necessitatibus! Officia odit ut debitis adipisci provident!
+              <p className="text-[18px] text-justify font-[400] my-2 xl:text-[22px]">
+                I mezzi messi a disposizione sono bici, scooter e monopattini,
+                tutti elettrici.
               </p>
             )}
           </li>
-          <li className="text-3xl p-3">
-            <div className="flex">
-              <span className="">Locations</span>
-              <button
-                className="ml-auto"
-                onClick={() => handleExpand("Locations")}
-              >
-                ↓
-              </button>
+          <li className="text-3xl p-10 xl:text-4xl xl:p-15">
+            <div className="flex justify-between">
+              <span>Locations</span>
+              <button onClick={() => handleExpand("Locations")}>↓</button>
             </div>
             {expandItem == "Locations" && (
-              <p className="text-sm text-justify font-[400]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
-                sint, rerum corrupti soluta tenetur autem, modi molestiae
-                numquam quibusdam tempore nemo voluptatem debitis
-                necessitatibus! Officia odit ut debitis adipisci provident!
+              <p className="text-[18px] text-justify font-[400] my-2 xl:text-[22px]">
+                Attualmente in più di 20 città europee: Bruxelles, Roma, Londra,
+                Varsavia, Parigi, Tel Aviv, Madrid etc. Molte altre in arrivo!
               </p>
             )}
           </li>
-          <li className="text-3xl p-3">
-            <div className="flex">
-              <span className="">Download App</span>
-              <button
-                className="ml-auto"
-                onClick={() => handleExpand("Download App")}
-              >
-                ↓
-              </button>
+          <li className="text-3xl p-10 xl:text-4xl xl:p-15">
+            <div className="flex justify-between">
+              <span>Download App</span>
+              <button onClick={() => handleExpand("Download App")}>↓</button>
             </div>
             {expandItem == "Download App" && (
-              <p className="text-sm text-justify font-[400]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
-                sint, rerum corrupti soluta tenetur autem, modi molestiae
-                numquam quibusdam tempore nemo voluptatem debitis
-                necessitatibus! Officia odit ut debitis adipisci provident!
+              <p className="text-[18px] text-justify font-[400] my-2 xl:text-[22px]">
+                Vi terremo aggiornati sui progressi del nostro lavoro e non
+                vediamo l'ora di condividere con voi l'esperienza della nuova
+                app Moove. Restate sintonizzati per ulteriori aggiornamenti!
               </p>
             )}
           </li>

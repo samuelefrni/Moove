@@ -4,6 +4,16 @@
 
 * {
   font-family: "Raleway";
-  /* --tw-bg-opacity: 1;
-  background-color: rgb(238 238 238 / var(--tw-bg-opacity)); */
+}
+
+h2 {
+  --tw-text-opacity: 1;
+  background: linear-gradient(
+    to right,
+    rgb(103 232 249 / var(--tw-text-opacity)),
+    rgb(134 239 172 / var(--tw-text-opacity)),
+    rgb(253 186 116 / var(--tw-text-opacity))
+  );
+  color: transparent;
+  background-clip: text;
 }
