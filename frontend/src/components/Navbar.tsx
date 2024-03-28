@@ -20,9 +20,7 @@ const Navbar = () => {
         {hamburgerMenuIsOpen ? (
           <div className="flex justify-between p-5 xl:p-8">
             <h1 className="z-10 font-[600] text-5xl bg-transparent xl:text-6xl">
-              <Link to={"/"} onClick={() => dispatch(setHamburgerMenuIsOpen())}>
-                Moove
-              </Link>
+              <Link to={"/"}>Moove</Link>
             </h1>
             <IoMdClose
               className="z-10 text-5xl bg-transparent cursor-pointer xl:text-6xl"
@@ -32,9 +30,7 @@ const Navbar = () => {
         ) : (
           <div className="flex justify-between text-white p-5 xl:p-8">
             <h1 className="z-10 font-[600] text-5xl bg-transparent xl:text-6xl">
-              <Link to={"/"} onClick={() => dispatch(setHamburgerMenuIsOpen())}>
-                Moove
-              </Link>
+              <Link to={"/"}>Moove</Link>
             </h1>
             <IoIosMenu
               className="z-10 text-5xl bg-transparent cursor-pointer xl:text-6xl"

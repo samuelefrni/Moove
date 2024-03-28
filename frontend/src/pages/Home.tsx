@@ -1,6 +1,8 @@
 import React from "react";
-import { useAccount } from "wagmi";
 import { useSelector } from "react-redux";
+import { useAccount, useConnect } from "wagmi";
+import { injected, walletConnect } from "wagmi/connectors";
+import { projectId } from "../cred";
 import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
@@ -14,6 +16,7 @@ import { RootState } from "../state/store";
 
 const Home = () => {
   const account = useAccount();
+  const { connect } = useConnect();
 
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
@@ -21,17 +24,28 @@ const Home = () => {
 
   return (
     <React.StrictMode>
-      {account.status == "disconnected" && !hamburgerMenuIsOpen && (
+      {!hamburgerMenuIsOpen ? (
         <div>
-          <div className="relative overflow-hidden min-h-[600px]">
+          <div className="relative overflow-hidden h-[600px]">
             <Navbar />
-            <header className="flex flex-col items-center justify-center text-white min-h-[400px] xl:flex-row">
+            <header className="flex flex-col items-center justify-center text-white h-[400px] xl:flex-row">
               <p className="text-cyan-300 z-10 p-3 text-4xl bg-transparent font-bold lg:text-6xl lg:p-5 xl:text-7xl">
                 Cleaner Air
               </p>
-              <p className="text-green-400 underline z-10 p-3 m-2 text-4xl bg-transparent font-bold lg:text-6xl lg:p-5 xl:text-7xl">
-                Less Traffic
-              </p>
+              {account.status == "connected" ? (
+                <button className="text-green-400 z-10 p-3 m-2 text-4xl bg-transparent rounded-xl font-bold lg:text-6xl lg:p-5 xl:text-7xl hover:underline hover:text-white">
+                  <span className="button-text">{`${account.address
+                    .slice(0, 12)
+                    .toUpperCase()}...`}</span>
+                </button>
+              ) : (
+                <button
+                  className="text-green-400 z-10 p-3 m-2 text-4xl bg-transparent rounded-xl font-bold lg:text-6xl lg:p-5 xl:text-7xl hover:underline hover:text-white"
+                  onClick={() => connect({ connector: injected() })}
+                >
+                  Connect Web3
+                </button>
+              )}
               <p className="text-orange-400 z-10 p-3 text-4xl bg-transparent font-bold lg:text-6xl lg:p-5 xl:text-7xl">
                 More Joy
               </p>
@@ -82,14 +96,12 @@ const Home = () => {
           </div>
           <Footer />
         </div>
+      ) : (
+        <div>
+          <Navbar />
+          <HamburgerMenu />
+        </div>
       )}
-      {account.status == "connected" ||
-        (hamburgerMenuIsOpen && (
-          <div>
-            <Navbar />
-            <HamburgerMenu />
-          </div>
-        ))}
     </React.StrictMode>
   );
 };

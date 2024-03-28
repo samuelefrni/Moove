@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Sale from "./pages/Sale";
+import Vehicle from "./pages/Vehicle";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sale" element={<Sale />} />
+        <Route path="/vehicle/:idVehicle" element={<Vehicle />} />
       </Routes>
     </React.StrictMode>
   );
