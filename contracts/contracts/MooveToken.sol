@@ -120,4 +120,8 @@ contract MooveToken is ERC721, Ownable {
         detailsVehicle[_tokenId].owner = _to;
         emit NFTVehicleTransferred(_tokenId, _from, _to);
     }
+
+    function arrayVehicleIds() public view returns (uint256[] memory) {
+        return allVehicle;
+    }
 }

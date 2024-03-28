@@ -216,4 +216,27 @@ describe("MooveToken", () => {
       ]);
     });
   });
+  describe("Testing arrayVehicleIds function", () => {
+    it("Should return the array of the allVehicle", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.addVehicle(
+        246810,
+        "Scooter",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      const vehicleIds = await MooveToken.arrayVehicleIds();
+
+      expect(vehicleIds).to.deep.equal([BigInt(12345), BigInt(246810)]);
+    });
+  });
 });
