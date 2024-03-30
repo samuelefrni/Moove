@@ -50,7 +50,7 @@ const Home = () => {
                 More Joy
               </p>
             </header>
-            <div className="bg-gradient-to-b from-black to-gray-700 absolute w-[240%] top-[50%] left-[90%] translate-x-[-50%] translate-y-[-50%] lg:w-[200%] lg:left-[80%] lg:top-[30%] xl:w-[100%] xl:left-[50%] xl:top-[30%]">
+            <div className="bg-gradient-to-b from-black to-gray-700 absolute w-[240%] top-[50%] left-[90%] translate-x-[-50%] translate-y-[-50%] lg:w-[220%] lg:left-[80%] lg:top-[30%] xl:w-[100%] xl:left-[50%] xl:top-[30%]">
               <img
                 src={ImageLandingPage}
                 alt="Moove image landig page"

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import Navbar from "./Navbar";
-
 const HamburgerMenu = () => {
   const [expandItem, setExpandItem] = useState<string | null>();
 

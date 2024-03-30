@@ -16,7 +16,7 @@ export interface IVehicle {
 }
 
 export interface IVehicleInfo {
-  id: number;
+  id: string;
   name: string;
   model: string;
   price: number;

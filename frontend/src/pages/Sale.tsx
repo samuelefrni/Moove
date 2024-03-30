@@ -8,9 +8,7 @@ import { setCurrentVehicle } from "../state/vehicle/vehicleSlice";
 
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
-import { IFormVehicleInfo, IVehicleInfo } from "../interface";
-import ElectricScooter from "../assets/best-electric-scooter.jpg";
-import ElectricBike from "../assets/2021011409531570234.jpeg";
+import { IFormVehicleInfo } from "../interface";
 
 const Sale = () => {
   const account = useAccount();
@@ -36,77 +34,11 @@ const Sale = () => {
     functionName: "owner",
   });
 
-  const { data: vehicleId } = useReadContract({
+  const { data: vehicleIds } = useReadContract({
     abi,
     address: contractAddress,
     functionName: "arrayVehicleIds",
   });
-
-  const readInfoVehicle = (id: bigint): IVehicleInfo | undefined => {
-    const { data: infoVehicle } = useReadContract({
-      abi: [
-        {
-          type: "function",
-          name: "detailsVehicle",
-          stateMutability: "view",
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "id",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "name",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "model",
-              type: "string",
-            },
-            {
-              internalType: "uint256",
-              name: "priceVehicle",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "available",
-              type: "bool",
-            },
-            {
-              internalType: "address",
-              name: "owner",
-              type: "address",
-            },
-          ],
-        },
-      ],
-      address: contractAddress,
-      functionName: "detailsVehicle",
-      args: [id],
-    });
-
-    if (infoVehicle) {
-      const result: IVehicleInfo = {
-        id: Number(infoVehicle[0]),
-        name: infoVehicle[1],
-        model: infoVehicle[2],
-        price: Number(infoVehicle[3]),
-        available: infoVehicle[4],
-        owner: infoVehicle[5],
-      };
-      return result;
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
@@ -168,9 +100,9 @@ const Sale = () => {
           <div>
             {account.address == ownerOfContract ? (
               <div>
-                <div className="bg-black">
+                <nav className="bg-black">
                   <Navbar />
-                </div>
+                </nav>
                 <form
                   className="flex flex-col justify-center items-center"
                   onSubmit={(e: React.ChangeEvent<HTMLFormElement>) =>
@@ -229,46 +161,29 @@ const Sale = () => {
               </div>
             ) : (
               <div>
-                <div className="bg-black">
+                <nav className="bg-black">
                   <Navbar />
-                </div>
-                {Array.isArray(vehicleId) && vehicleId.length > 0 ? (
+                </nav>
+                {Array.isArray(vehicleIds) && vehicleIds.length > 0 ? (
                   <div>
-                    {vehicleId.map((idVehicle) => (
+                    {vehicleIds.map((idVehicle) => (
                       <div
                         className="border border-solid border-red-600 relative overflow-hidden h-[250px] flex flex-col p-5 justify-end"
                         key={idVehicle}
                       >
-                        <span className="text-4xl font-[600] z-10 text-white">
+                        <span className="text-4xl font-[600] z-10">
+                          {Number(idVehicle)}
+                        </span>
+                        <button className="bg-green-500 text-black w-[150px] rounded-lg p-2 my-5 z-10 hover:bg-black hover:text-white">
                           <Link
                             to={`/vehicle/${idVehicle}`}
                             onClick={() =>
                               dispatch(setCurrentVehicle(Number(idVehicle)))
                             }
                           >
-                            {Number(idVehicle)}
+                            Scopri di più
                           </Link>
-                        </span>
-                        <button className="bg-green-600 text-white w-[150px] rounded-lg p-2 my-5 z-10">
-                          Scopri di più
                         </button>
-                        {readInfoVehicle(idVehicle)?.name == "Scooter" ? (
-                          <div className="bg-black absolute w-[130%] top-[30%] left-[55%] translate-x-[-50%] translate-y-[-50%] scale-x-[-1]">
-                            <img
-                              src={ElectricScooter}
-                              alt="Electric scooter"
-                              className="opacity-80"
-                            />
-                          </div>
-                        ) : (
-                          <div className="bg-black absolute w-[130%] top-[30%] left-[65%] translate-x-[-50%] translate-y-[-50%]">
-                            <img
-                              src={ElectricBike}
-                              alt="Bike scooter"
-                              className="opacity-80"
-                            />
-                          </div>
-                        )}
                       </div>
                     ))}
                   </div>
