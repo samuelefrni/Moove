@@ -62,7 +62,7 @@ describe("MooveToken", () => {
         owner.address,
       ]);
       expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
-      expect(await MooveToken.allVehicle(0)).to.equal(12345);
+      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
     });
   });
   describe("Testing addVehicleAuctions function", () => {
@@ -92,7 +92,9 @@ describe("MooveToken", () => {
         owner.address,
       ]);
       expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
-      expect(await MooveToken.auctionsVehicles(0)).to.equal(12345);
+      expect(await MooveToken.arrayAuctionsVehicles()).to.deep.equal([
+        BigInt(12345),
+      ]);
     });
   });
   describe("Testing buyNFTVehicle function", () => {
@@ -139,9 +141,27 @@ describe("MooveToken", () => {
         MooveToken.connect(otherAccount3).buyNFTVehicle(12345, {
           value: ethers.parseEther("0.1"),
         })
-      ).to.be.revertedWith(
-        "The vehicle has already been taken by another user"
+      ).to.be.revertedWith("Vehicle doesn't found");
+    });
+    it("Should remove the NFT from the array after the purchase of the user", async () => {
+      const { otherAccount, MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("0.1")
       );
+
+      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
+
+      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+        value: ethers.parseEther("0.1"),
+      });
+
+      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount);
+
+      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([]);
     });
     it("Should transfer the NFT to the buyer and change the metadata", async () => {
       const { owner, otherAccount, MooveToken } = await loadFixture(deploy);
@@ -168,6 +188,24 @@ describe("MooveToken", () => {
         otherAccount.address,
       ]);
       expect(await MooveToken.availableVehicle(12345)).to.equal(false);
+    });
+    it("Shuold add the NFT vehicle to the purchasedVehicles mapping of the sender", async () => {
+      const { otherAccount, MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      expect(
+        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount.address)
+      ).to.deep.equal([BigInt(12345)]);
     });
   });
   describe("Testing transferFrom function", () => {

@@ -27,9 +27,11 @@ contract MooveToken is ERC721, Ownable {
 
     mapping(uint256 => Vehicle) public detailsVehicle;
     mapping(uint256 => bool) public availableVehicle;
+    mapping(address => uint256[]) internal purchasedVehiclesByAccount;
 
-    uint256[] public allVehicle;
-    uint256[] public auctionsVehicles;
+    uint256[] internal allVehicle;
+    uint256[] internal vehiclesPurchased;
+    uint256[] internal auctionsVehicles;
 
     constructor(
         string memory _nameToken,
@@ -107,7 +109,12 @@ contract MooveToken is ERC721, Ownable {
         transferFrom(ownerVehicle, msg.sender, _idVehicle);
 
         detailsVehicle[_idVehicle].available = false;
+        detailsVehicle[_idVehicle].owner = msg.sender;
         availableVehicle[_idVehicle] = false;
+        purchasedVehiclesByAccount[msg.sender].push(_idVehicle);
+
+        removeElement(_idVehicle);
+
         emit NFTVehicleBuyed(_idVehicle, msg.sender);
     }
 
@@ -121,7 +128,37 @@ contract MooveToken is ERC721, Ownable {
         emit NFTVehicleTransferred(_tokenId, _from, _to);
     }
 
+    function removeElement(uint256 _idVehicle) internal {
+        uint256 index;
+        bool found = false;
+        for (uint256 i = 0; i < allVehicle.length; i++) {
+            if (allVehicle[i] == _idVehicle) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        require(found == true);
+        allVehicle[index] = allVehicle[allVehicle.length - 1];
+        allVehicle.pop();
+        vehiclesPurchased.push(_idVehicle);
+    }
+
     function arrayVehicleIds() public view returns (uint256[] memory) {
         return allVehicle;
+    }
+
+    function arrayVehiclesPurchased() public view returns (uint256[] memory) {
+        return vehiclesPurchased;
+    }
+
+    function arrayPurchasedVehiclesByAddress(
+        address _account
+    ) public view returns (uint256[] memory) {
+        return purchasedVehiclesByAccount[_account];
+    }
+
+    function arrayAuctionsVehicles() public view returns (uint256[] memory) {
+        return auctionsVehicles;
     }
 }
