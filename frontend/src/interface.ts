@@ -11,6 +11,12 @@ export interface IFormVehicleInfo {
   price: number | string;
 }
 
+export interface IFormAuctionVehicleInfo {
+  id: number | string;
+  name: string;
+  model: string;
+}
+
 export interface IVehicle {
   currentVehicle: number;
 }

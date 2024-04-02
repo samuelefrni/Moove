@@ -34,9 +34,11 @@ const Home = () => {
               </p>
               {account.status == "connected" ? (
                 <button className="text-green-400 z-10 p-3 m-2 text-4xl bg-transparent rounded-xl font-bold lg:text-6xl lg:p-5 xl:text-7xl hover:underline hover:text-white">
-                  <span className="button-text">{`${account.address
-                    .slice(0, 12)
-                    .toUpperCase()}...`}</span>
+                  <Link to={"/account"}>
+                    <span className="button-text">{`${account.address
+                      .slice(0, 12)
+                      .toUpperCase()}...`}</span>
+                  </Link>
                 </button>
               ) : (
                 <button
