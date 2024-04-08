@@ -27,11 +27,15 @@ contract MooveToken is ERC721, Ownable {
 
     mapping(uint256 => Vehicle) public detailsVehicle;
     mapping(uint256 => bool) public availableVehicle;
+
     mapping(address => uint256[]) internal purchasedVehiclesByAccount;
+    mapping(address => uint256[]) internal purchasedAuctionVehiclesByAccount;
 
     uint256[] internal allVehicle;
     uint256[] internal vehiclesPurchased;
-    uint256[] internal auctionsVehicles;
+
+    uint256[] internal allAuctionsVehicles;
+    uint256[] internal auctionVehiclePurchased;
 
     constructor(
         string memory _nameToken,
@@ -74,7 +78,7 @@ contract MooveToken is ERC721, Ownable {
             owner: msg.sender
         });
         availableVehicle[_id] = true;
-        auctionsVehicles.push(_id);
+        allAuctionsVehicles.push(_id);
         _safeMint(msg.sender, _id);
         emit NFTAuctionsVehicles(_name, _model);
     }
@@ -113,7 +117,7 @@ contract MooveToken is ERC721, Ownable {
         availableVehicle[_idVehicle] = false;
         purchasedVehiclesByAccount[msg.sender].push(_idVehicle);
 
-        removeElement(_idVehicle);
+        removeArrayElementAllVehicle(_idVehicle);
 
         emit NFTVehicleBuyed(_idVehicle, msg.sender);
     }
@@ -128,7 +132,7 @@ contract MooveToken is ERC721, Ownable {
         emit NFTVehicleTransferred(_tokenId, _from, _to);
     }
 
-    function removeElement(uint256 _idVehicle) internal {
+    function removeArrayElementAllVehicle(uint256 _idVehicle) internal {
         uint256 index;
         bool found = false;
         for (uint256 i = 0; i < allVehicle.length; i++) {
@@ -159,6 +163,10 @@ contract MooveToken is ERC721, Ownable {
     }
 
     function arrayAuctionsVehicles() public view returns (uint256[] memory) {
-        return auctionsVehicles;
+        return allAuctionsVehicles;
+    }
+
+    function getCurrentTimestamp() public view returns (uint256) {
+        return block.timestamp;
     }
 }

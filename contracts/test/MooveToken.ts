@@ -277,4 +277,80 @@ describe("MooveToken", () => {
       expect(vehicleIds).to.deep.equal([BigInt(12345), BigInt(246810)]);
     });
   });
+  describe("Testing arrayVehiclesPurchased function", () => {
+    it("Should return the array of the purchased vehicle", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.addVehicle(
+        246810,
+        "Scooter",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.buyNFTVehicle(12345, { value: ethers.parseEther("1") });
+
+      expect(await MooveToken.arrayVehiclesPurchased()).to.deep.equal([
+        BigInt(12345),
+      ]);
+    });
+  });
+  describe("Testing arrayPurchasedVehiclesByAddress function", () => {
+    it("Should return the array of the purchased vehicle by a specific account", async () => {
+      const { otherAccount, MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.addVehicle(
+        246810,
+        "Scooter",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.buyNFTVehicle(12345, { value: ethers.parseEther("1") });
+
+      await MooveToken.connect(otherAccount).buyNFTVehicle(246810, {
+        value: ethers.parseEther("1"),
+      });
+
+      expect(
+        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount)
+      ).to.deep.equal([BigInt(246810)]);
+    });
+  });
+  describe("Testing arrayAuctionsVehicles function", () => {
+    it("Should return the array of the allAuctionsVehicles", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicleAuctions(12345, "Bike", "Electric");
+
+      expect(await MooveToken.arrayAuctionsVehicles()).to.deep.equal([
+        BigInt(12345),
+      ]);
+    });
+  });
+  describe("Testing getCurrentTimestamp function", () => {
+    it("Should return the correct block timestamp", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      const block = await ethers.provider.getBlock("latest");
+
+      expect(await MooveToken.getCurrentTimestamp()).to.deep.equal(
+        block?.timestamp
+      );
+    });
+  });
 });
