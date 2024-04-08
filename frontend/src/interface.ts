@@ -1,7 +1,39 @@
-// import { Dispatch, SetStateAction } from "react";
-
 export interface INavbar {
   hamburgerMenuIsOpen: boolean;
+}
+
+export interface ICardHome {
+  title: string;
+  paragraph: string;
+  button: string;
+  image: string;
+  link: string;
+}
+
+export interface ICardVehicle {
+  name: string;
+  model: string;
+  image: string;
+  title: string;
+  firstDescription: string;
+  secondDescription: string;
+  purchaseParagraph: string;
+  price: string;
+  avaible: boolean;
+}
+
+export interface ICardAuction {
+  name: string;
+  model: string;
+  image: string;
+  title: string;
+  firstDescription: string;
+  secondDescription: string;
+  isStarted: boolean;
+  startedAt: bigint;
+  willEndAt: bigint;
+  winningBid: bigint;
+  ownerBid: string;
 }
 
 export interface IFormVehicleInfo {

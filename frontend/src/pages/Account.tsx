@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { abi } from "../artifacts/contracts/VehicleAuctions.sol/VehicleAuctions.json";
+import { setCurrentVehicle } from "../state/vehicle/vehicleSlice";
 
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
 import { RootState } from "../state/store";
 import { IFormAuctionVehicleInfo, IFormVehicleInfo } from "../interface";
+import { Link } from "react-router-dom";
 
 const Account = () => {
   const account = useAccount();
@@ -16,6 +18,8 @@ const Account = () => {
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
   );
+
+  const dispatch = useDispatch();
 
   const [formVehicleInfo, setFormVehicleInfo] = useState<IFormVehicleInfo>({
     id: "",
@@ -41,6 +45,13 @@ const Account = () => {
     abi,
     address: contractAddress,
     functionName: "arrayPurchasedVehiclesByAddress",
+    args: [account.address],
+  });
+
+  const { data: auctionPurchasedVehiclesByAddress } = useReadContract({
+    abi,
+    address: contractAddress,
+    functionName: "arrayAuctionVehiclePurchasedByAddress",
     args: [account.address],
   });
 
@@ -73,7 +84,7 @@ const Account = () => {
       account: account.address,
       functionName: "addVehicle",
       args: [id, name, model, price],
-      nonce: 1,
+      nonce: 2,
     });
   };
 
@@ -127,9 +138,9 @@ const Account = () => {
       formAuctionVehicleInfo.model
     ) {
       handleAddAuctionVehicleTx(
-        Number(formVehicleInfo.id),
-        formVehicleInfo.name,
-        formVehicleInfo.model
+        Number(formAuctionVehicleInfo.id),
+        formAuctionVehicleInfo.name,
+        formAuctionVehicleInfo.model
       );
       setFormAuctionVehicleInfo({
         id: "",
@@ -268,22 +279,52 @@ const Account = () => {
                 <div className="bg-black">
                   <Navbar />
                 </div>
-                <div className="border border-solid border-red-600 flex flex-col items-center">
-                  <span className="p-10">{account.address}</span>
-                  <div className="border border-solid border-blue-600 flex flex-col">
-                    <span className="font-[600] p-10">Your vehicle</span>
-                    <div>
-                      {Array.isArray(purchasedVehiclesByAddress) &&
-                        purchasedVehiclesByAddress.length > 0 && (
-                          <div>
-                            {purchasedVehiclesByAddress.map((vehicle) => (
-                              <div>
-                                <p>{Number(vehicle)}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                    </div>
+                <div className="flex flex-col">
+                  <span className="p-10 text-center text-2xl italic xl:text-4xl">
+                    {account.address?.slice(0, 12)}...
+                  </span>
+                  <div className="flex flex-col items-center p-5 text-center">
+                    <span className="font-[600] text-2xl p-5 xl:text-4xl">
+                      Purchased for 1 days
+                    </span>
+                    {Array.isArray(purchasedVehiclesByAddress) &&
+                      purchasedVehiclesByAddress.length > 0 &&
+                      purchasedVehiclesByAddress.map((vehicle) => (
+                        <div key={vehicle}>
+                          <Link
+                            to={`/vehicle/${Number(vehicle)}`}
+                            onClick={() =>
+                              dispatch(setCurrentVehicle(Number(vehicle)))
+                            }
+                          >
+                            <p className="p-5 text-2xl xl:text-4xl">
+                              {Number(vehicle)}
+                            </p>
+                          </Link>
+                        </div>
+                      ))}
+                    <span className="font-[600] text-2xl p-5 text-center xl:text-4xl">
+                      Purchased for 7 days
+                    </span>
+                    {Array.isArray(auctionPurchasedVehiclesByAddress) &&
+                      auctionPurchasedVehiclesByAddress.length > 0 &&
+                      auctionPurchasedVehiclesByAddress.map((vehicle) => (
+                        <div key={vehicle}>
+                          <Link
+                            to={`/vehicle/${Number(vehicle)}`}
+                            onClick={() =>
+                              dispatch(setCurrentVehicle(Number(vehicle)))
+                            }
+                          >
+                            <p
+                              className="p-5 text-2xl xl:text-4xl"
+                              key={vehicle}
+                            >
+                              {Number(vehicle)}
+                            </p>
+                          </Link>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>

@@ -7,12 +7,14 @@ import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
+import CardHome from "../components/CardHome";
 import Footer from "../components/Footer";
+import { RootState } from "../state/store";
 
 import ImageLandingPage from "../assets/0x0.webp";
 import ImageMission from "../assets/5fcfe0b8f3d03a879fe49d11_timur-romanov-osNaWvJ1D1E-unsplash.jpg";
 import ImageCity from "../assets/mapV2.svg";
-import { RootState } from "../state/store";
+import ImageAuction from "../assets/GettyImages-50947488-e1511307648580.jpg";
 
 const Home = () => {
   const account = useAccount();
@@ -60,25 +62,14 @@ const Home = () => {
               />
             </div>
           </div>
-          <div className="relative overflow-hidden min-h-[600px]">
-            <header className="flex flex-col text-center h-[600px] justify-center items-center p-1 text-white">
-              <h2 className="text-2xl z-10">La nostra missione</h2>
-              <p className="text-4xl font-bold p-10 z-10 bg-transparent xl:w-[800px]">
-                Siamo qui per liberare le nostre città con una mobilità
-                sostenibile, innovativa e alla portata di tutti!
-              </p>
-              <button className="text-xl shadow-xl hover:bg-white hover:text-black rounded-lg w-[200px] p-3 text-white z-10 xl:text-2xl">
-                <Link to={"/sale"}>I nostri veicoli</Link>
-              </button>
-            </header>
-            <div className="bg-gray-800 absolute w-[240%] top-[50%] left-[20%] translate-x-[-50%] translate-y-[-50%] lg:w-[150%] lg:left-[50%] xl:w-[100%]">
-              <img
-                src={ImageMission}
-                alt="Moove mission"
-                className="blur-[5px] grayscale-[20%] opacity-60"
-              />
-            </div>
-          </div>
+          <CardHome
+            title="La nostra missione"
+            paragraph="Siamo qui per liberare le nostre città con una mobilità sostenibile,
+            innovativa e alla portata di tutti!"
+            button="I nostri veicoli"
+            image={`${ImageMission}`}
+            link="sale"
+          />
           <div className="relative overflow-hidden min-h-[600px] p-5 bg-blue-400">
             <header className="h-[300px] flex flex-col text-center justify-center items-center text-white xl:p-10 xl:h-[600px]">
               <h2 className="text-2xl underline bg-transparent text-white z-10 xl:mr-auto xl:p-5">
@@ -96,6 +87,14 @@ const Home = () => {
               />
             </div>
           </div>
+          <CardHome
+            title="Le nostre aste"
+            paragraph="Attraverso le aste, offriamo la possibilità di detenere i
+            veicoli per 1 settimana intera."
+            button="I nostri veicoli"
+            image={`${ImageAuction}`}
+            link="auction"
+          />
           <Footer />
         </div>
       ) : (
