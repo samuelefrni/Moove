@@ -43,8 +43,7 @@ contract VehicleAuctions is MooveToken {
     ) external onlyOwner IdExist(_idVehicle) {
         auctionStatus[_idVehicle] = Status({
             startedAt: block.timestamp,
-            //To change in 1 days
-            willEndAt: block.timestamp + 2 minutes,
+            willEndAt: block.timestamp + 1 days,
             winningBid: 0,
             ownerBid: address(0)
         });
@@ -100,9 +99,13 @@ contract VehicleAuctions is MooveToken {
 
         purchasedAuctionVehiclesByAccount[msg.sender].push(_idVehicle);
 
-        removeArrayElementallAuctionsVehicles(_idVehicle);
+        removeVehicleFromAllAuctionVehiclesArray(_idVehicle);
 
         withdrawhed[_idVehicle] = true;
+
+        detailsVehicle[_idVehicle].available = false;
+        detailsVehicle[_idVehicle].owner = msg.sender;
+        detailsVehicle[_idVehicle].willEndAt = block.timestamp + 7 days;
 
         emit VehicleWithdrawhed(msg.sender, _idVehicle);
     }
@@ -147,7 +150,44 @@ contract VehicleAuctions is MooveToken {
         fundsRecovered[msg.sender] = true;
     }
 
-    function removeArrayElementallAuctionsVehicles(
+    function expiryCheckAuction(uint256 _idVehicle) external onlyOwner {
+        bool found = false;
+        bool expired = false;
+
+        for (uint256 i = 0; i < auctionVehiclePurchased.length; i++) {
+            if (auctionVehiclePurchased[i] == _idVehicle) {
+                found = true;
+                break;
+            }
+        }
+
+        if (block.timestamp > detailsVehicle[_idVehicle].willEndAt) {
+            expired = true;
+        }
+
+        require(found == true, "Vehicle doesn't found");
+        require(expired == true, "The subscription has not yet expired");
+
+        address ownerVehicle = detailsVehicle[_idVehicle].owner;
+
+        removePurchasedAuctionVehicleByAccount(_idVehicle, ownerVehicle);
+
+        _approve(msg.sender, _idVehicle, ownerVehicle);
+
+        transferFrom(ownerVehicle, msg.sender, _idVehicle);
+
+        detailsVehicle[_idVehicle].available = true;
+        detailsVehicle[_idVehicle].owner = msg.sender;
+        detailsVehicle[_idVehicle].willEndAt = 0;
+        availableVehicle[_idVehicle] = true;
+        isStarted[_idVehicle] = false;
+
+        removeVehicleFromAuctionVehiclePurchasedArray(_idVehicle);
+
+        emit VehicleExpired(_idVehicle);
+    }
+
+    function removeVehicleFromAllAuctionVehiclesArray(
         uint256 _idVehicle
     ) internal {
         uint256 index;
@@ -165,6 +205,52 @@ contract VehicleAuctions is MooveToken {
         ];
         allAuctionsVehicles.pop();
         auctionVehiclePurchased.push(_idVehicle);
+    }
+
+    function removeVehicleFromAuctionVehiclePurchasedArray(
+        uint256 _idVehicle
+    ) internal {
+        uint256 index;
+        bool found = false;
+        for (uint256 i = 0; i < auctionVehiclePurchased.length; i++) {
+            if (auctionVehiclePurchased[i] == _idVehicle) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        require(found == true);
+        auctionVehiclePurchased[index] = auctionVehiclePurchased[
+            auctionVehiclePurchased.length - 1
+        ];
+        auctionVehiclePurchased.pop();
+        allAuctionsVehicles.push(_idVehicle);
+    }
+
+    function removePurchasedAuctionVehicleByAccount(
+        uint256 _idVehicle,
+        address _ownerNFT
+    ) internal {
+        uint256 index;
+        bool found = false;
+        for (
+            uint256 i = 0;
+            i < purchasedAuctionVehiclesByAccount[_ownerNFT].length;
+            i++
+        ) {
+            if (purchasedAuctionVehiclesByAccount[_ownerNFT][i] == _idVehicle) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        require(found == true);
+        purchasedAuctionVehiclesByAccount[_ownerNFT][
+            index
+        ] = purchasedAuctionVehiclesByAccount[_ownerNFT][
+            purchasedAuctionVehiclesByAccount[_ownerNFT].length - 1
+        ];
+        purchasedAuctionVehiclesByAccount[_ownerNFT].pop();
     }
 
     function arrayAuctionVehiclePurchased()

@@ -445,6 +445,121 @@ describe("VehicleAuctions", () => {
       );
     });
   });
+  describe("Testing expiryCheckAuction function", () => {
+    it("Should revert if the vehicle doesn't exist", async () => {
+      const { VehicleAuctions } = await loadFixture(deploy);
+
+      await expect(
+        VehicleAuctions.expiryCheckAuction(12345)
+      ).to.be.revertedWith("Vehicle doesn't found");
+    });
+    it("Should revert if the subscription has not yet expired", async () => {
+      const { otherAccount, VehicleAuctions } = await loadFixture(deploy);
+
+      await VehicleAuctions.addVehicleAuctions(12345, "Bike", "Electric");
+
+      await VehicleAuctions.startAuction(12345);
+
+      await VehicleAuctions.connect(otherAccount).participateAuction(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      await ethers.provider.send("evm_increaseTime", [100000000]);
+      await ethers.provider.send("evm_mine");
+
+      await VehicleAuctions.connect(otherAccount).withdrawNFT(12345);
+
+      expect(await VehicleAuctions.ownerOf(12345)).to.equal(
+        otherAccount.address
+      );
+
+      await expect(
+        VehicleAuctions.expiryCheckAuction(12345)
+      ).to.be.revertedWith("The subscription has not yet expired");
+    });
+    it("Should remove the NFT from auctionVehiclePurchased and make it avaible after send it to allAuctionsVehicles", async () => {
+      const { owner, otherAccount, VehicleAuctions } = await loadFixture(
+        deploy
+      );
+
+      await VehicleAuctions.addVehicleAuctions(12345, "Bike", "Electric");
+
+      await VehicleAuctions.startAuction(12345);
+
+      expect(await VehicleAuctions.arrayAuctionsVehicles()).to.deep.equal([
+        BigInt(12345),
+      ]);
+
+      await VehicleAuctions.connect(otherAccount).participateAuction(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      await ethers.provider.send("evm_increaseTime", [100000000]);
+      await ethers.provider.send("evm_mine");
+
+      await expect(
+        await VehicleAuctions.connect(otherAccount).withdrawNFT(12345)
+      )
+        .to.emit(VehicleAuctions, "VehicleWithdrawhed")
+        .withArgs(otherAccount.address, 12345);
+
+      expect(await VehicleAuctions.arrayAuctionsVehicles()).to.deep.equal([]);
+      expect(await VehicleAuctions.ownerOf(12345)).to.equal(
+        otherAccount.address
+      );
+      expect(
+        await VehicleAuctions.arrayAuctionVehiclePurchasedByAddress(
+          otherAccount.address
+        )
+      ).to.deep.equal([BigInt(12345)]);
+      expect(
+        await VehicleAuctions.arrayAuctionVehiclePurchased()
+      ).to.deep.equal([BigInt(12345)]);
+
+      await ethers.provider.send("evm_increaseTime", [100000000]);
+      await ethers.provider.send("evm_mine");
+
+      await expect(await VehicleAuctions.expiryCheckAuction(12345))
+        .to.emit(VehicleAuctions, "VehicleExpired")
+        .withArgs(12345);
+
+      expect(await VehicleAuctions.arrayAuctionsVehicles()).to.deep.equal([
+        BigInt(12345),
+      ]);
+      expect(
+        await VehicleAuctions.arrayAuctionVehiclePurchasedByAddress(
+          otherAccount.address
+        )
+      ).to.deep.equal([]);
+      expect(
+        await VehicleAuctions.arrayAuctionVehiclePurchased()
+      ).to.deep.equal([]);
+
+      await VehicleAuctions.startAuction(12345);
+
+      await VehicleAuctions.participateAuction(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      await ethers.provider.send("evm_increaseTime", [100000000]);
+      await ethers.provider.send("evm_mine");
+
+      await expect(await VehicleAuctions.withdrawNFT(12345))
+        .to.emit(VehicleAuctions, "VehicleWithdrawhed")
+        .withArgs(owner.address, 12345);
+
+      expect(await VehicleAuctions.arrayAuctionsVehicles()).to.deep.equal([]);
+      expect(await VehicleAuctions.ownerOf(12345)).to.equal(owner.address);
+      expect(
+        await VehicleAuctions.arrayAuctionVehiclePurchasedByAddress(
+          owner.address
+        )
+      ).to.deep.equal([BigInt(12345)]);
+      expect(
+        await VehicleAuctions.arrayAuctionVehiclePurchased()
+      ).to.deep.equal([BigInt(12345)]);
+    });
+  });
   describe("Testing arrayAuctionVehiclePurchased function", () => {
     it("Should return the auctionVehiclePurchased array", async () => {
       const { VehicleAuctions } = await loadFixture(deploy);

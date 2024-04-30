@@ -13,6 +13,7 @@ contract MooveToken is ERC721, Ownable {
         address indexed to
     );
     event NFTAuctionsVehicles(string indexed name, string indexed model);
+    event VehicleExpired(uint256 indexed idVehicle);
 
     struct Vehicle {
         uint256 id;
@@ -21,6 +22,7 @@ contract MooveToken is ERC721, Ownable {
         uint256 priceVehicle;
         bool available;
         address owner;
+        uint256 willEndAt;
     }
 
     address private _owner;
@@ -56,7 +58,8 @@ contract MooveToken is ERC721, Ownable {
             model: _model,
             priceVehicle: _priceVehicle,
             available: true,
-            owner: msg.sender
+            owner: msg.sender,
+            willEndAt: 0
         });
         availableVehicle[_id] = true;
         allVehicle.push(_id);
@@ -75,7 +78,8 @@ contract MooveToken is ERC721, Ownable {
             model: _model,
             priceVehicle: 0,
             available: true,
-            owner: msg.sender
+            owner: msg.sender,
+            willEndAt: 0
         });
         availableVehicle[_id] = true;
         allAuctionsVehicles.push(_id);
@@ -114,10 +118,11 @@ contract MooveToken is ERC721, Ownable {
 
         detailsVehicle[_idVehicle].available = false;
         detailsVehicle[_idVehicle].owner = msg.sender;
+        detailsVehicle[_idVehicle].willEndAt = block.timestamp + 1 days;
         availableVehicle[_idVehicle] = false;
         purchasedVehiclesByAccount[msg.sender].push(_idVehicle);
 
-        removeArrayElementAllVehicle(_idVehicle);
+        removeVehicleFromAllVehicleArray(_idVehicle);
 
         emit NFTVehicleBuyed(_idVehicle, msg.sender);
     }
@@ -132,7 +137,44 @@ contract MooveToken is ERC721, Ownable {
         emit NFTVehicleTransferred(_tokenId, _from, _to);
     }
 
-    function removeArrayElementAllVehicle(uint256 _idVehicle) internal {
+    function expiryCheck(uint256 _idVehicle) external onlyOwner {
+        bool found = false;
+        bool expired = false;
+
+        for (uint256 i = 0; i < vehiclesPurchased.length; i++) {
+            if (vehiclesPurchased[i] == _idVehicle) {
+                found = true;
+                break;
+            }
+        }
+
+        if (block.timestamp > detailsVehicle[_idVehicle].willEndAt) {
+            expired = true;
+        }
+
+        require(found == true, "Vehicle doesn't found");
+        require(expired == true, "The subscription has not yet expired");
+
+        address ownerVehicle = detailsVehicle[_idVehicle].owner;
+
+        removePurchasedVehicleByAccount(_idVehicle, ownerVehicle);
+
+        _approve(msg.sender, _idVehicle, ownerVehicle);
+
+        transferFrom(ownerVehicle, msg.sender, _idVehicle);
+
+        detailsVehicle[_idVehicle].available = true;
+        detailsVehicle[_idVehicle].owner = msg.sender;
+        detailsVehicle[_idVehicle].willEndAt = 0;
+
+        availableVehicle[_idVehicle] = true;
+
+        removeVehicleFromVehiclePurchasedArray(_idVehicle);
+
+        emit VehicleExpired(_idVehicle);
+    }
+
+    function removeVehicleFromAllVehicleArray(uint256 _idVehicle) internal {
         uint256 index;
         bool found = false;
         for (uint256 i = 0; i < allVehicle.length; i++) {
@@ -146,6 +188,52 @@ contract MooveToken is ERC721, Ownable {
         allVehicle[index] = allVehicle[allVehicle.length - 1];
         allVehicle.pop();
         vehiclesPurchased.push(_idVehicle);
+    }
+
+    function removeVehicleFromVehiclePurchasedArray(
+        uint256 _idVehicle
+    ) internal {
+        uint256 index;
+        bool found = false;
+        for (uint256 i = 0; i < vehiclesPurchased.length; i++) {
+            if (vehiclesPurchased[i] == _idVehicle) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        require(found == true);
+        vehiclesPurchased[index] = vehiclesPurchased[
+            vehiclesPurchased.length - 1
+        ];
+        vehiclesPurchased.pop();
+        allVehicle.push(_idVehicle);
+    }
+
+    function removePurchasedVehicleByAccount(
+        uint256 _idVehicle,
+        address _ownerNFT
+    ) internal {
+        uint256 index;
+        bool found = false;
+        for (
+            uint256 i = 0;
+            i < purchasedVehiclesByAccount[_ownerNFT].length;
+            i++
+        ) {
+            if (purchasedVehiclesByAccount[_ownerNFT][i] == _idVehicle) {
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        require(found == true);
+        purchasedVehiclesByAccount[_ownerNFT][
+            index
+        ] = purchasedVehiclesByAccount[_ownerNFT][
+            purchasedVehiclesByAccount[_ownerNFT].length - 1
+        ];
+        purchasedVehiclesByAccount[_ownerNFT].pop();
     }
 
     function arrayVehicleIds() public view returns (uint256[] memory) {

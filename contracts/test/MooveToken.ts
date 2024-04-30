@@ -60,6 +60,7 @@ describe("MooveToken", () => {
         ethers.parseEther("0.1"),
         true,
         owner.address,
+        0,
       ]);
       expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
       expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
@@ -90,6 +91,7 @@ describe("MooveToken", () => {
         0,
         true,
         owner.address,
+        0,
       ]);
       expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
       expect(await MooveToken.arrayAuctionsVehicles()).to.deep.equal([
@@ -177,6 +179,10 @@ describe("MooveToken", () => {
         value: ethers.parseEther("0.1"),
       });
 
+      const provider = await ethers.provider.getBlock("latest");
+
+      const timestamp = provider?.timestamp || 0;
+
       expect(await MooveToken.balanceOf(otherAccount)).to.equal(1);
       expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount.address);
       expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
@@ -186,6 +192,7 @@ describe("MooveToken", () => {
         ethers.parseEther("0.1"),
         false,
         otherAccount.address,
+        timestamp + 1 * 24 * 60 * 60,
       ]);
       expect(await MooveToken.availableVehicle(12345)).to.equal(false);
     });
@@ -251,7 +258,84 @@ describe("MooveToken", () => {
         ethers.parseEther("0.1"),
         true,
         otherAccount.address,
+        0,
       ]);
+    });
+  });
+  describe("Testing expiryCheck function", () => {
+    it("Should revert if the vehicle doesn't exist", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await expect(MooveToken.expiryCheck(12345)).to.revertedWith(
+        "Vehicle doesn't found"
+      );
+    });
+    it("Should revert if the subscription has not yet expired", async () => {
+      const { otherAccount, MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      await expect(MooveToken.expiryCheck(12345)).to.be.revertedWith(
+        "The subscription has not yet expired"
+      );
+    });
+    it("Should make the NFT vehicle avaible and push it to the allVehicle array", async () => {
+      const { owner, otherAccount, MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.connect(owner).addVehicle(
+        12345,
+        "Bike",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
+
+      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount.address);
+      expect(await MooveToken.availableVehicle(12345)).to.equal(false);
+      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([]);
+      expect(await MooveToken.arrayVehiclesPurchased()).to.deep.equal([
+        BigInt(12345),
+      ]);
+      expect(
+        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount.address)
+      ).to.deep.equal([BigInt(12345)]);
+
+      await ethers.provider.send("evm_increaseTime", [100000000]);
+      await ethers.provider.send("evm_mine");
+
+      await expect(await MooveToken.connect(owner).expiryCheck(12345))
+        .to.emit(MooveToken, "VehicleExpired")
+        .withArgs(12345);
+
+      expect(await MooveToken.availableVehicle(12345)).to.equal(true);
+      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
+      expect(await MooveToken.arrayVehiclesPurchased()).to.deep.equal([]);
+      expect(
+        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount.address)
+      ).to.deep.equal([]);
+
+      await MooveToken.connect(owner).buyNFTVehicle(12345, {
+        value: ethers.parseEther("1"),
+      });
+
+      expect(await MooveToken.ownerOf(12345)).to.equal(owner.address);
+      expect(
+        await MooveToken.arrayPurchasedVehiclesByAddress(owner.address)
+      ).to.deep.equal([BigInt(12345)]);
     });
   });
   describe("Testing arrayVehicleIds function", () => {
