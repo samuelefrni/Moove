@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
 import ElectricScooter from "../assets/best-electric-scooter.jpg";
-import ElectricBike from "../assets/2021011409531570234.jpeg";
+import ElectricBike from "../assets/R.jpg";
 import CardVehicle from "../components/CardVehicle";
 import CardAuction from "../components/CardAuction";
 
@@ -189,7 +189,19 @@ const Vehicle = () => {
                   />
                 )
               ) : infoVehicle?.[1] === "Scooter" ? (
-                <div></div>
+                <CardAuction
+                  name={`${infoVehicle?.[1]}`}
+                  model={`${infoVehicle?.[2]}`}
+                  image={`${ElectricScooter}`}
+                  title="Ti presentiamo lo scooter elettrico Gen4"
+                  firstDescription="Dotato di batterie intercambiabili, lo scooter elettrico Gen4 è il nostro modello più sostenibile."
+                  secondDescription="È stato realizzato per offrire una guida più confortevole, con una pedana più ampia e un centro di gravità più basso che consentono il pieno controllo del mezzo."
+                  winningBid={auctionStatus?.[2] || 0n}
+                  isStarted={isAuctionStarted || false}
+                  startedAt={auctionStatus?.[0] || 0n}
+                  willEndAt={auctionStatus?.[1] || 0n}
+                  ownerBid={auctionStatus?.[3] || ""}
+                />
               ) : (
                 <CardAuction
                   name={`${infoVehicle?.[1]}`}

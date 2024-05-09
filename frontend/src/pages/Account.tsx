@@ -41,6 +41,18 @@ const Account = () => {
     functionName: "owner",
   });
 
+  const { data: purchasedVehicle } = useReadContract({
+    abi,
+    address: contractAddress,
+    functionName: "arrayVehiclesPurchased",
+  });
+
+  const { data: auctionVehiclePurchased } = useReadContract({
+    abi,
+    address: contractAddress,
+    functionName: "arrayAuctionVehiclePurchased",
+  });
+
   const { data: purchasedVehiclesByAddress } = useReadContract({
     abi,
     address: contractAddress,
@@ -84,7 +96,7 @@ const Account = () => {
       account: account.address,
       functionName: "addVehicle",
       args: [id, name, model, price],
-      nonce: 2,
+      nonce: 4,
     });
   };
 
@@ -175,10 +187,10 @@ const Account = () => {
                     handleAddNewNFTSubmit(e)
                   }
                 >
-                  <span className="italic p-10 font-[600] text-center xl:text-xl">
+                  <span className="italic p-10 font-[600] text-center xl:text-2xl">
                     Add new NFT vehicle
                   </span>
-                  <p className="px-5 text-justify xl:text-xl">
+                  <p className="p-5 text-justify xl:text-xl">
                     <br /> Here you can add new NFT vehicles that will appear in
                     the Sale section. It is very important to enter the correct
                     information on the NFT vehicle, this is because the action
@@ -231,10 +243,10 @@ const Account = () => {
                     handleAddAuctionNFTSubmit(e)
                   }
                 >
-                  <span className="italic p-10 font-[600] text-center xl:text-xl">
+                  <span className="italic p-10 font-[600] text-center xl:text-2xl">
                     Add new auction for NFT vehicle
                   </span>
-                  <p className="px-5 text-justify xl:text-xl">
+                  <p className="p-5 text-justify xl:text-xl">
                     <br /> Here you can add new NFT vehicles acution that will
                     appear in the Auction section. It is very important to enter
                     the correct information on the NFT vehicle, this is because
@@ -273,6 +285,56 @@ const Account = () => {
                     </button>
                   </div>
                 </form>
+                <hr />
+                <div className="flex flex-col justify-center items-center text-center">
+                  <span className="italic p-10 font-[600] text-center xl:text-2xl">
+                    Purchased Vehicles
+                  </span>
+                  <p className="px-5 text-justify xl:text-xl">
+                    <br />
+                    Here you can see all the vehicles that are in use. Going to
+                    the dedicated page you can restock the vehicle. This
+                    obviously it happen only if the subscription time of the
+                    vehicle has expire. In this way other buyers can purchase
+                    the vehicle and use it.
+                  </p>
+                  {Array.isArray(purchasedVehicle) && (
+                    <div>
+                      {purchasedVehicle.map((item) => (
+                        <div className="p-10" key={item}>
+                          <Link
+                            to={`/vehicle/${item}`}
+                            onClick={() =>
+                              dispatch(setCurrentVehicle(Number(item)))
+                            }
+                          >
+                            <span className="text-4xl cursor-pointer hover:opacity-50">
+                              {Number(item)}
+                            </span>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {Array.isArray(auctionVehiclePurchased) && (
+                    <div>
+                      {auctionVehiclePurchased.map((item) => (
+                        <div className="p-10" key={item}>
+                          <Link
+                            to={`/vehicle/${item}`}
+                            onClick={() =>
+                              dispatch(setCurrentVehicle(Number(item)))
+                            }
+                          >
+                            <span className="text-4xl cursor-pointer hover:opacity-50">
+                              {Number(item)}
+                            </span>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <div>
@@ -285,7 +347,7 @@ const Account = () => {
                   </span>
                   <div className="flex flex-col items-center p-5 text-center">
                     <span className="font-[600] text-2xl p-5 xl:text-4xl">
-                      Purchased for 1 days
+                      Purchased for 24h
                     </span>
                     {Array.isArray(purchasedVehiclesByAddress) &&
                       purchasedVehiclesByAddress.length > 0 &&

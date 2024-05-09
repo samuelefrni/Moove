@@ -126,7 +126,7 @@ const CardAuction: React.FC<ICardAuction> = ({
           functionName: "participateAuction",
           args: [BigInt(idVehicle)],
           value: parseEther(valueInEther),
-          nonce: 0,
+          nonce: 1,
         },
         {
           onError: (e) => {
@@ -145,7 +145,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         account: account.address,
         functionName: "withdrawNFT",
         args: [currentVehicle],
-        nonce: 1,
+        nonce: 2,
       },
       {
         onError: (e) => {
@@ -163,7 +163,25 @@ const CardAuction: React.FC<ICardAuction> = ({
         account: account.address,
         functionName: "recoverFunds",
         args: [currentVehicle],
-        nonce: 1,
+        nonce: 0,
+      },
+      {
+        onError: (e) => {
+          alert(e.message);
+        },
+      }
+    );
+  };
+
+  const expiryCheckAuction = (idVehicle: number) => {
+    writeContract(
+      {
+        abi,
+        address: contractAddress,
+        account: account.address,
+        functionName: "expiryCheckAuction",
+        args: [idVehicle],
+        nonce: 6,
       },
       {
         onError: (e) => {
@@ -176,43 +194,47 @@ const CardAuction: React.FC<ICardAuction> = ({
   return (
     <React.StrictMode>
       <div className="relative overflow-hidden h-[400px]">
-        <div className="flex text-white font-[600] text-[50px] h-[400px] p-5 items-end">
+        <div className="flex text-white font-[600] text-[50px] h-[400px] p-5 items-end lg:text-[60px] xl:text-[80px]">
           <span className="z-10">{`${model} ${name}`}</span>
         </div>
-        <div className="bg-black absolute w-[180%] top-[40%] left-[90%] translate-x-[-50%] translate-y-[-50%]">
-          <img src={image} alt="Bike scooter" className="opacity-60" />
+        <div className="bg-black absolute w-[250%] top-[30%] left-[100%] translate-x-[-50%] translate-y-[-50%] lg:w-[200%] lg:top-[0%] lg:left-[90%] xl:w-[100%] xl:top-[60%] xl:left-[50%]">
+          <img src={image} alt="Bike" className="opacity-60 xl:w-[100%]" />
         </div>
       </div>
-      <div>
-        <p className="font-[600] flex justify-center p-5 text-2xl">{title}</p>
-        <p className="flex justify-center p-5 text-justify">
+      <div className="xl:flex xl:flex-col items-center">
+        <p className="font-[600] flex justify-center p-5 text-2xl lg:text-4xl lg:p-10 xl:text-5xl">
+          {title}
+        </p>
+        <p className="flex justify-center p-5 text-justify lg:text-2xl lg:p-10 xl:text-3xl xl:w-[900px]">
           {firstDescription}
         </p>
-        <p className="flex justify-center p-5 text-justify">
+        <p className="flex justify-center p-5 text-justify lg:text-2xl lg:p-10 xl:text-3xl xl:w-[900px]">
           {secondDescription}
         </p>
         <form
           onSubmit={startAuction}
-          className="bg-black text-center text-white"
+          className="bg-black text-white items-center flex flex-col w-[100%] p-10"
         >
           {isStarted ? (
             currentTimestamp && currentTimestamp < willEndAt ? (
               <div className="flex flex-col items-center">
-                <p className="font-[600] p-5 text-4xl">Auction Started</p>
-                <p className="p-3 text-xl">{`Started at: ${startedAt}`}</p>
-                <p className="p-3 text-xl">{`Current: ${currentTimestamp}`}</p>
-                <p className="p-3 text-xl">{`Will end: ${willEndAt}`}</p>
-                <div className="flex m-3">
-                  <p className="p-3 text-xl font-[600]">{`Winning Bid: ${formatEther(
+                <p className="font-[600] flex justify-center p-5 text-2xl lg:text-4xl lg:p-10 xl:text-5xl">
+                  Auction Started
+                </p>
+                <p className="flex justify-center text-xl p-5 text-justify lg:text-2xl xl:p-10 xl:text-3xl">{`Started at: ${startedAt}`}</p>
+                {/* <p className="flex justify-center text-xl p-5 text-justify lg:text-2xl xl:p-10 xl:text-4xl">{`Current: ${currentTimestamp}`}</p> */}
+                <p className="flex justify-center text-xl p-5 text-justify lg:text-2xl xl:p-10 xl:text-3xl">{`Will end: ${willEndAt}`}</p>
+                <div className="flex m-5">
+                  <p className="flex justify-center p-5 text-justify lg:text-2xl xl:text-3xl">{`Winning Bid: ${formatEther(
                     winningBid
                   )} ETH`}</p>
-                  <p className="p-3 text-xl font-[600]">{`Owner: ${ownerBid?.slice(
+                  <p className="pflex justify-center p-5 text-justify lg:text-2xl xl:text-3xl">{`Owner: ${ownerBid?.slice(
                     0,
                     6
                   )}...`}</p>
                 </div>
                 <input
-                  className="p-5 text-xl placeholder:text-xl rounded-lg text-black"
+                  className="p-2 rounded-lg text-center text-black lg:p-5 lg:placeholder:text-xl xl:placeholder:text-2xl xl:w-[400px]"
                   type="text"
                   placeholder="Parse value in ETH"
                   value={bid}
@@ -221,7 +243,7 @@ const CardAuction: React.FC<ICardAuction> = ({
                   }
                 />
                 <button
-                  className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white"
+                  className="bg-white text-black rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-white hover:bg-black xl:text-3xl xl:px-8 xl:py-4"
                   type="button"
                   onClick={() => makeOffer(currentVehicle, bid)}
                 >
@@ -231,14 +253,14 @@ const CardAuction: React.FC<ICardAuction> = ({
             ) : account.address === ownerBid ? (
               hasWithdrawhed === true ? (
                 <div>
-                  <button className="bg-white opacity-60 cursor-default text-black rounded-lg text-2xl px-4 py-2 m-10 w-[200px]">
+                  <button className="bg-white opacity-60 cursor-default text-black rounded-lg text-2xl px-4 py-2 m-10 w-[200px] xl:text-4xl">
                     Withdraw
                   </button>
                 </div>
               ) : (
                 <div>
                   <button
-                    className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white"
+                    className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:text-4xl"
                     type="button"
                     onClick={() => withdrawNFT()}
                   >
@@ -246,16 +268,26 @@ const CardAuction: React.FC<ICardAuction> = ({
                   </button>
                 </div>
               )
+            ) : account.address === ownerOfContract ? (
+              <div>
+                <button
+                  className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:text-4xl"
+                  type="button"
+                  onClick={() => expiryCheckAuction(currentVehicle)}
+                >
+                  Restock
+                </button>
+              </div>
             ) : hasRecoveredFunds === true ? (
               <div>
-                <button className="bg-white opacity-60 cursor-default text-black rounded-lg text-2xl px-4 py-2 m-10 w-[200px]">
+                <button className="bg-white opacity-60 cursor-default text-black rounded-lg text-2xl px-4 py-2 m-10 w-[200px] xl:text-4xl">
                   Recover Funds
                 </button>
               </div>
             ) : (
               <div>
                 <button
-                  className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white"
+                  className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:text-4xl"
                   type="button"
                   onClick={() => recoverFunds()}
                 >
@@ -266,7 +298,7 @@ const CardAuction: React.FC<ICardAuction> = ({
           ) : account.address === ownerOfContract ? (
             <div className="p-10">
               <button
-                className="bg-black text-white rounded-lg font-[600] m-5 p-5 text-4xl hover:text-black hover:bg-white"
+                className="bg-black text-white rounded-lg font-[600] m-5 p-5 text-4xl hover:text-black hover:bg-white xl:text-4xl"
                 type="submit"
               >
                 Start Auction
@@ -274,7 +306,9 @@ const CardAuction: React.FC<ICardAuction> = ({
             </div>
           ) : (
             <div className="p-10">
-              <p className="font-[600] p-5 text-4xl">Auction isn't started</p>
+              <p className="font-[600] p-5 text-4xl text-center">
+                Auction isn't started
+              </p>
             </div>
           )}
         </form>

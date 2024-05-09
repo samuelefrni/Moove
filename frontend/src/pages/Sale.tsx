@@ -8,6 +8,7 @@ import { setCurrentVehicle } from "../state/vehicle/vehicleSlice";
 
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
+import ImageMission from "../assets/5fcfe0b8f3d03a879fe49d11_timur-romanov-osNaWvJ1D1E-unsplash.jpg";
 
 const Sale = () => {
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
@@ -47,10 +48,10 @@ const Sale = () => {
               <div>
                 {vehicleIds.map((idVehicle) => (
                   <div
-                    className="border border-solid border-red-600 relative overflow-hidden h-[250px] flex flex-col p-5 justify-end"
+                    className="relative overflow-hidden h-[250px] flex flex-col justify-end p-10"
                     key={idVehicle}
                   >
-                    <span className="text-4xl font-[600] z-10">
+                    <span className="text-4xl font-[600] z-10 text-white">
                       {Number(idVehicle)}
                     </span>
                     <button className="bg-green-500 text-white w-[150px] rounded-lg p-2 my-5 z-10 hover:bg-black hover:text-white">
@@ -63,6 +64,13 @@ const Sale = () => {
                         Scopri di più
                       </Link>
                     </button>
+                    <div className="bg-black absolute w-[400%] top-[100%] left-[120%] translate-x-[-50%] translate-y-[-50%] lg:w-[200%] lg:left-[50%] xl:w-[120%]">
+                      <img
+                        src={ImageMission}
+                        alt="Moove Mission Image"
+                        className="opacity-60 blur-[5px]"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
