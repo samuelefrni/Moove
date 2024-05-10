@@ -20,7 +20,6 @@ const CardVehicle: React.FC<ICardVehicle> = ({
 }) => {
   const account = useAccount();
   const { writeContract } = useWriteContract();
-  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
 
   const currentVehicle = useSelector(
     (state: RootState) => state.vehicle.currentVehicle
@@ -28,7 +27,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
 
   const { data: ownerOfContract } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "owner",
   });
 
@@ -79,7 +78,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
         ],
       },
     ],
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "detailsVehicle",
     args: [BigInt(currentVehicle)],
   });
@@ -87,7 +86,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
   const purchaseVehicle = (idVehicle: number) => {
     writeContract({
       abi,
-      address: contractAddress,
+      address: import.meta.env.CONTRACT_ADDRESS,
       account: account.address,
       functionName: "buyNFTVehicle",
       args: [idVehicle],
@@ -100,7 +99,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
     writeContract(
       {
         abi,
-        address: contractAddress,
+        address: import.meta.env.CONTRACT_ADDRESS,
         account: account.address,
         functionName: "expiryCheck",
         args: [idVehicle],

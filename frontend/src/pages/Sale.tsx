@@ -11,8 +11,6 @@ import HamburgerMenu from "../components/HamburgerMenu";
 import ImageMission from "../assets/5fcfe0b8f3d03a879fe49d11_timur-romanov-osNaWvJ1D1E-unsplash.jpg";
 
 const Sale = () => {
-  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
-
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
   );
@@ -21,13 +19,13 @@ const Sale = () => {
 
   const { data: vehicleIds } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "arrayVehicleIds",
   });
 
   const { data: purchasedVehicle } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "arrayVehiclesPurchased",
   });
 

@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 const Account = () => {
   const account = useAccount();
   const { writeContract } = useWriteContract();
-  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
 
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
@@ -37,32 +36,32 @@ const Account = () => {
 
   const { data: ownerOfContract } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "owner",
   });
 
   const { data: purchasedVehicle } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "arrayVehiclesPurchased",
   });
 
   const { data: auctionVehiclePurchased } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "arrayAuctionVehiclePurchased",
   });
 
   const { data: purchasedVehiclesByAddress } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "arrayPurchasedVehiclesByAddress",
     args: [account.address],
   });
 
   const { data: auctionPurchasedVehiclesByAddress } = useReadContract({
     abi,
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "arrayAuctionVehiclePurchasedByAddress",
     args: [account.address],
   });
@@ -92,7 +91,7 @@ const Account = () => {
   ) => {
     writeContract({
       abi,
-      address: contractAddress,
+      address: import.meta.env.CONTRACT_ADDRESS,
       account: account.address,
       functionName: "addVehicle",
       args: [id, name, model, price],
@@ -107,7 +106,7 @@ const Account = () => {
   ) => {
     writeContract({
       abi,
-      address: contractAddress,
+      address: import.meta.env.CONTRACT_ADDRESS,
       account: account.address,
       functionName: "addVehicleAuctions",
       args: [id, name, model],

@@ -11,8 +11,6 @@ import CardVehicle from "../components/CardVehicle";
 import CardAuction from "../components/CardAuction";
 
 const Vehicle = () => {
-  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
-
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
   );
@@ -67,7 +65,7 @@ const Vehicle = () => {
         ],
       },
     ],
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "detailsVehicle",
     args: [BigInt(currentVehicle)],
   });
@@ -94,7 +92,7 @@ const Vehicle = () => {
         type: "function",
       },
     ],
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "isAuctionStarted",
     args: [BigInt(currentVehicle)],
   });
@@ -136,7 +134,7 @@ const Vehicle = () => {
         type: "function",
       },
     ],
-    address: contractAddress,
+    address: import.meta.env.CONTRACT_ADDRESS,
     functionName: "auctionStatus",
     args: [BigInt(currentVehicle)],
   });
