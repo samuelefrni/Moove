@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useAccount, useConnect } from "wagmi";
 import { walletConnect } from "wagmi/connectors";
-import { projectId } from "../cred";
 import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
@@ -46,7 +45,11 @@ const Home = () => {
                 <button
                   className="text-green-400 z-10 p-3 m-2 text-4xl bg-transparent rounded-xl font-bold lg:text-6xl lg:p-5 xl:text-7xl hover:underline hover:text-white"
                   onClick={() =>
-                    connect({ connector: walletConnect({ projectId }) })
+                    connect({
+                      connector: walletConnect({
+                        projectId: String(process.env.PROJECT_ID),
+                      }),
+                    })
                   }
                 >
                   Connect Web3
