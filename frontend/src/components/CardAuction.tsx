@@ -22,7 +22,7 @@ const CardAuction: React.FC<ICardAuction> = ({
   willEndAt,
 }) => {
   const account = useAccount();
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
   const { writeContract } = useWriteContract();
 
   const [bid, setBid] = useState<string>("");
@@ -112,7 +112,7 @@ const CardAuction: React.FC<ICardAuction> = ({
       account: account.address,
       functionName: "startAuction",
       args: [currentVehicle],
-      nonce: 3,
+      // nonce: ,
     });
   };
 
@@ -126,7 +126,7 @@ const CardAuction: React.FC<ICardAuction> = ({
           functionName: "participateAuction",
           args: [BigInt(idVehicle)],
           value: parseEther(valueInEther),
-          nonce: 1,
+          // nonce: ,
         },
         {
           onError: (e) => {
@@ -145,7 +145,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         account: account.address,
         functionName: "withdrawNFT",
         args: [currentVehicle],
-        nonce: 2,
+        // nonce: ,
       },
       {
         onError: (e) => {
@@ -163,7 +163,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         account: account.address,
         functionName: "recoverFunds",
         args: [currentVehicle],
-        nonce: 0,
+        // nonce: ,
       },
       {
         onError: (e) => {
@@ -181,7 +181,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         account: account.address,
         functionName: "expiryCheckAuction",
         args: [idVehicle],
-        nonce: 6,
+        // nonce: ,
       },
       {
         onError: (e) => {

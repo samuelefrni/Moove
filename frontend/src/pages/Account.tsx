@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 const Account = () => {
   const account = useAccount();
   const { writeContract } = useWriteContract();
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
 
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
@@ -96,7 +96,7 @@ const Account = () => {
       account: account.address,
       functionName: "addVehicle",
       args: [id, name, model, price],
-      nonce: 4,
+      // nonce:,
     });
   };
 
@@ -111,7 +111,7 @@ const Account = () => {
       account: account.address,
       functionName: "addVehicleAuctions",
       args: [id, name, model],
-      nonce: 1,
+      // nonce:,
     });
   };
 

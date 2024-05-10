@@ -11,7 +11,7 @@ import CardVehicle from "../components/CardVehicle";
 import CardAuction from "../components/CardAuction";
 
 const Vehicle = () => {
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const contractAddress = "0x6E255909129930283806e40ca7Bd798678338247";
 
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen

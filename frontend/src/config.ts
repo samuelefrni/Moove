@@ -1,5 +1,5 @@
 import { http, createConfig } from "wagmi";
-import { hardhat, mainnet, sepolia } from "viem/chains";
+import { mainnet, sepolia, hardhat } from "viem/chains";
 
 export const config = createConfig({
   chains: [mainnet, sepolia, hardhat],
