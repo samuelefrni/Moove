@@ -32,7 +32,7 @@ const CardAuction: React.FC<ICardAuction> = ({
 
   const { data: ownerOfContract } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "owner",
   });
 
@@ -52,7 +52,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         type: "function",
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "getCurrentTimestamp",
   });
 
@@ -78,7 +78,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         type: "function",
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "hasWithdrawhed",
     args: [BigInt(currentVehicle)],
   });
@@ -99,7 +99,7 @@ const CardAuction: React.FC<ICardAuction> = ({
         type: "function",
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "hasRecoveredFunds",
   });
 
@@ -107,7 +107,7 @@ const CardAuction: React.FC<ICardAuction> = ({
     e.preventDefault();
     writeContract({
       abi,
-      address: import.meta.env.CONTRACT_ADDRESS,
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
       account: account.address,
       functionName: "startAuction",
       args: [currentVehicle],
@@ -120,7 +120,7 @@ const CardAuction: React.FC<ICardAuction> = ({
       writeContract(
         {
           abi,
-          address: import.meta.env.CONTRACT_ADDRESS,
+          address: import.meta.env.VITE_CONTRACT_ADDRESS,
           account: account.address,
           functionName: "participateAuction",
           args: [BigInt(idVehicle)],
@@ -140,7 +140,7 @@ const CardAuction: React.FC<ICardAuction> = ({
     writeContract(
       {
         abi,
-        address: import.meta.env.CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
         account: account.address,
         functionName: "withdrawNFT",
         args: [currentVehicle],
@@ -158,7 +158,7 @@ const CardAuction: React.FC<ICardAuction> = ({
     writeContract(
       {
         abi,
-        address: import.meta.env.CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
         account: account.address,
         functionName: "recoverFunds",
         args: [currentVehicle],
@@ -176,7 +176,7 @@ const CardAuction: React.FC<ICardAuction> = ({
     writeContract(
       {
         abi,
-        address: import.meta.env.CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
         account: account.address,
         functionName: "expiryCheckAuction",
         args: [idVehicle],

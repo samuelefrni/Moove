@@ -47,7 +47,7 @@ const Home = () => {
                   onClick={() =>
                     connect({
                       connector: walletConnect({
-                        projectId: `${import.meta.env.PROJECT_ID}`,
+                        projectId: import.meta.env.VITE_PROJECT_ID,
                       }),
                     })
                   }

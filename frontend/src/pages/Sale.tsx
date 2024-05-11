@@ -19,13 +19,13 @@ const Sale = () => {
 
   const { data: vehicleIds } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "arrayVehicleIds",
   });
 
   const { data: purchasedVehicle } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "arrayVehiclesPurchased",
   });
 

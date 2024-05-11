@@ -36,32 +36,32 @@ const Account = () => {
 
   const { data: ownerOfContract } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "owner",
   });
 
   const { data: purchasedVehicle } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "arrayVehiclesPurchased",
   });
 
   const { data: auctionVehiclePurchased } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "arrayAuctionVehiclePurchased",
   });
 
   const { data: purchasedVehiclesByAddress } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "arrayPurchasedVehiclesByAddress",
     args: [account.address],
   });
 
   const { data: auctionPurchasedVehiclesByAddress } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "arrayAuctionVehiclePurchasedByAddress",
     args: [account.address],
   });
@@ -91,11 +91,11 @@ const Account = () => {
   ) => {
     writeContract({
       abi,
-      address: import.meta.env.CONTRACT_ADDRESS,
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
       account: account.address,
       functionName: "addVehicle",
       args: [id, name, model, price],
-      // nonce:,
+      nonce: 1,
     });
   };
 
@@ -106,11 +106,11 @@ const Account = () => {
   ) => {
     writeContract({
       abi,
-      address: import.meta.env.CONTRACT_ADDRESS,
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
       account: account.address,
       functionName: "addVehicleAuctions",
       args: [id, name, model],
-      // nonce:,
+      // nonce: ,
     });
   };
 

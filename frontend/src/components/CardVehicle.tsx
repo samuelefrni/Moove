@@ -27,7 +27,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
 
   const { data: ownerOfContract } = useReadContract({
     abi,
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "owner",
   });
 
@@ -78,7 +78,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
         ],
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "detailsVehicle",
     args: [BigInt(currentVehicle)],
   });
@@ -86,7 +86,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
   const purchaseVehicle = (idVehicle: number) => {
     writeContract({
       abi,
-      address: import.meta.env.CONTRACT_ADDRESS,
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
       account: account.address,
       functionName: "buyNFTVehicle",
       args: [idVehicle],
@@ -99,7 +99,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
     writeContract(
       {
         abi,
-        address: import.meta.env.CONTRACT_ADDRESS,
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
         account: account.address,
         functionName: "expiryCheck",
         args: [idVehicle],

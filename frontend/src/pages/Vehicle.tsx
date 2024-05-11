@@ -65,7 +65,7 @@ const Vehicle = () => {
         ],
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "detailsVehicle",
     args: [BigInt(currentVehicle)],
   });
@@ -92,7 +92,7 @@ const Vehicle = () => {
         type: "function",
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "isAuctionStarted",
     args: [BigInt(currentVehicle)],
   });
@@ -134,7 +134,7 @@ const Vehicle = () => {
         type: "function",
       },
     ],
-    address: import.meta.env.CONTRACT_ADDRESS,
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "auctionStatus",
     args: [BigInt(currentVehicle)],
   });
