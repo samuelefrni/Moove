@@ -14,7 +14,14 @@
 
 ## Introduction
 
+Welcome to the Moove project! This repository contains the implementation of a decentralized platform for the sale and management of Non-Fungible Tokens (NFTs) specifically tailored for Moove, a company providing shared micro-mobility services in various European cities. Moove aims to enhance its shared mobility experience by leveraging NFTs to manage its fleet of vehicles.
+
 ## About my choice
+
+I chose to split the project into two folders:
+
+1. **Contracts folder**:
+2. **Frontend folder**:
 
 ## Installation
 
