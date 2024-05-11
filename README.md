@@ -20,8 +20,9 @@ Welcome to the Moove project! This repository contains the implementation of a d
 
 I chose to split the project into two folders:
 
-1. **Contracts folder**:
-2. **Frontend folder**:
+### Contracts folder
+
+### Frontend folder
 
 ## Installation
 
