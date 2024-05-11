@@ -14,6 +14,7 @@ import ImageLandingPage from "../assets/0x0.webp";
 import ImageMission from "../assets/5fcfe0b8f3d03a879fe49d11_timur-romanov-osNaWvJ1D1E-unsplash.jpg";
 import ImageCity from "../assets/mapV2.svg";
 import ImageAuction from "../assets/GettyImages-50947488-e1511307648580.jpg";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
   const account = useAccount();
@@ -25,6 +26,10 @@ const Home = () => {
 
   return (
     <React.StrictMode>
+      <Helmet>
+        <title>Moove | Micromobility</title>
+        <meta name="description" content="Moove home page" />
+      </Helmet>
       {!hamburgerMenuIsOpen ? (
         <div>
           <div className="relative overflow-hidden h-[600px]">

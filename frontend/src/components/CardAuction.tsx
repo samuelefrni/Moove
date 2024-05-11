@@ -7,6 +7,7 @@ import { formatEther, parseEther } from "viem";
 import { ICardAuction } from "../interface";
 
 import FAQ from "./FAQ";
+import { Helmet } from "react-helmet";
 
 const CardAuction: React.FC<ICardAuction> = ({
   name,
@@ -34,6 +35,58 @@ const CardAuction: React.FC<ICardAuction> = ({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
     functionName: "owner",
+  });
+
+  const { data: infoVehicle } = useReadContract({
+    abi: [
+      {
+        type: "function",
+        name: "detailsVehicle",
+        stateMutability: "view",
+        inputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "id",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "model",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "priceVehicle",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "available",
+            type: "bool",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+        ],
+      },
+    ],
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
+    functionName: "detailsVehicle",
+    args: [BigInt(currentVehicle)],
   });
 
   const { data: currentTimestamp } = useReadContract({
@@ -192,6 +245,9 @@ const CardAuction: React.FC<ICardAuction> = ({
 
   return (
     <React.StrictMode>
+      <Helmet>
+        <title>{`Moove | ${infoVehicle?.[2]} ${infoVehicle?.[1]}`}</title>
+      </Helmet>
       <div className="relative overflow-hidden h-[400px]">
         <div className="flex text-white font-[600] text-[50px] h-[400px] p-5 items-end lg:text-[60px] xl:text-[80px]">
           <span className="z-10">{`${model} ${name}`}</span>

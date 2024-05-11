@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import FAQ from "./FAQ";
 import { ICardVehicle } from "../interface";
 import { RootState } from "../state/store";
+import { Helmet } from "react-helmet";
 
 const CardVehicle: React.FC<ICardVehicle> = ({
   name,
@@ -91,7 +92,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
       functionName: "buyNFTVehicle",
       args: [idVehicle],
       value: infoVehicle?.[3],
-      // nonce: ,
+      // nonce:,
     });
   };
 
@@ -115,6 +116,9 @@ const CardVehicle: React.FC<ICardVehicle> = ({
 
   return (
     <React.StrictMode>
+      <Helmet>
+        <title>{`Moove | ${infoVehicle?.[2]} ${infoVehicle?.[1]}`}</title>
+      </Helmet>
       <div>
         <div className="relative overflow-hidden h-[400px]">
           <div className="flex text-white font-[600] text-[50px] h-[400px] p-5 items-end lg:text-[60px] xl:text-[80px]">

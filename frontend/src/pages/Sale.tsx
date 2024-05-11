@@ -9,6 +9,7 @@ import { setCurrentVehicle } from "../state/vehicle/vehicleSlice";
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
 import ImageMission from "../assets/5fcfe0b8f3d03a879fe49d11_timur-romanov-osNaWvJ1D1E-unsplash.jpg";
+import { Helmet } from "react-helmet";
 
 const Sale = () => {
   const hamburgerMenuIsOpen = useSelector(
@@ -31,6 +32,13 @@ const Sale = () => {
 
   return (
     <React.StrictMode>
+      <Helmet>
+        <title>Moove | Sale Vehicles</title>
+        <meta
+          name="description"
+          content="Page dedicated to the vehicles in sale"
+        />
+      </Helmet>
       <div>
         {hamburgerMenuIsOpen ? (
           <div>

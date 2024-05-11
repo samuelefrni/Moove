@@ -9,6 +9,7 @@ import HamburgerMenu from "../components/HamburgerMenu";
 import { RootState } from "../state/store";
 import { IFormAuctionVehicleInfo, IFormVehicleInfo } from "../interface";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const Account = () => {
   const account = useAccount();
@@ -95,7 +96,7 @@ const Account = () => {
       account: account.address,
       functionName: "addVehicle",
       args: [id, name, model, price],
-      nonce: 1,
+      // nonce:,
     });
   };
 
@@ -110,7 +111,7 @@ const Account = () => {
       account: account.address,
       functionName: "addVehicleAuctions",
       args: [id, name, model],
-      // nonce: ,
+      // nonce:,
     });
   };
 
@@ -167,6 +168,10 @@ const Account = () => {
 
   return (
     <React.StrictMode>
+      <Helmet>
+        <title>Moove | Account</title>
+        <meta name="description" content="Moove account page" />
+      </Helmet>
       <div>
         {hamburgerMenuIsOpen ? (
           <div>
