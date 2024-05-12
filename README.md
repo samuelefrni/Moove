@@ -1,7 +1,7 @@
 <div align="center"><img src="./frontend/src/assets/fav/m-logo-letter-leaves-green-eco-icon-vector-23508485.png" width="150px"></div>
 <br />
 <div align="center">
-  <h1 align="center">MOOVE</h1>
+  <h1 align="center">Moove</h1>
 
   <p align="center">
     <br />
@@ -18,13 +18,30 @@ Welcome to the Moove project! This repository contains the implementation of a d
 
 ## About my choice
 
-I chose to split the project into two folders:
+As you can see, to manage this project i choose to separete it in two folder:
 
-### Contracts folder
+1. **Contracts**: This folder contains the smart contracts that handle all the logic of the project. The `MooveToken.sol` contract manages the Moove tokens, while the `VehicleAuctions.sol` contract handles vehicle auctions. With these contracts, the owner can add new vehicles to sell, and users can purchase them. All smart contracts were developed using Hardhat, a popular Ethereum development framework.
 
-### Frontend folder
+2. **Frontend**: This folder contains the frontend code for the Moove platform. It provides a user interface for interacting with the smart contracts, allowing users to browse available vehicles, place bids in auctions, and manage their Moove tokens. The frontend is built using React, a popular JavaScript library for building user interfaces, and it connects to the Ethereum blockchain using WAGMI, a Web3 library for interacting with Ethereum smart contracts.
 
 ## Installation
+
+To install and test this project locally, follow these steps:
+
+1. Clone this repository: `git clone https://github.com/samuelefrni/Moove`
+2. Navigate to the contracts folder
+3. Install the dependencies of the contracts folder: `npm install`
+4. Compile contracts: `npx hardhat compile`
+5. Run tests: `npx hardhat test`
+6. Run: `npx hardhat node` to run a blockchain on your local enviroment
+7. Add the localhost network and an account of the local blockchain on your Metamask wallet
+8. Deploy the smart contract on your local enviroment: `npx hardhat run .\ignition\modules\deploy.ts --network localhost`
+9. Navigate to the frontend folder
+10. Create a `.env.local` file on the frontend folder
+11. Create two variables on the `.env.local` file: `VITE_PROJECT_ID=YOUR_PROJECT_KEY` and `VITE_CONTRACT_ADDRESS=CONTRACT_ADDRESS`
+12. Install the dependencies of the frontend folder: `npm install`
+13. Run the app with: `npm run dev`
+14. Connect your wallet on the localhost network!
 
 ## About testing
 
