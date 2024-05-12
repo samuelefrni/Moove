@@ -31,17 +31,18 @@ To install and test this project locally, follow these steps:
 1. Clone this repository: `git clone https://github.com/samuelefrni/Moove`
 2. Navigate to the contracts folder
 3. Install the dependencies of the contracts folder: `npm install`
-4. Compile contracts: `npx hardhat compile`
-5. Run tests: `npx hardhat test`
-6. Run: `npx hardhat node` to run a blockchain on your local enviroment
-7. Add the localhost network and an account of the local blockchain on your Metamask wallet
-8. Deploy the smart contract on your local enviroment: `npx hardhat run .\ignition\modules\deploy.ts --network localhost`
-9. Navigate to the frontend folder
-10. Create a `.env.local` file on the frontend folder
-11. Create two variables on the `.env.local` file: `VITE_PROJECT_ID=YOUR_PROJECT_KEY` and `VITE_CONTRACT_ADDRESS=CONTRACT_ADDRESS`
-12. Install the dependencies of the frontend folder: `npm install`
-13. Run the app with: `npm run dev`
-14. Connect your wallet on the localhost network!
+4. Go to `hardhat.config.ts` and follow the instruction before compile contracts
+5. Compile contracts: `npx hardhat compile`
+6. Run tests: `npx hardhat test`
+7. Run: `npx hardhat node` to run a blockchain on your local enviroment
+8. Add the localhost network on your Metamask wallet and import an account from the list that will show up after running the `npx hardhat node`
+9.  While the node is still running, deploy the smart contract on your local enviroment: `npx hardhat run .\ignition\modules\deploy.ts --network localhost`
+10. Navigate to the frontend folder
+11. Create a `.env.local` file on the frontend folder
+12. Create two variables on the `.env.local` file: `VITE_PROJECT_ID=YOUR_PROJECT_KEY` and `VITE_CONTRACT_ADDRESS=CONTRACT_ADDRESS`
+13. Install the dependencies of the frontend folder: `npm install`
+14. Run the app with: `npm run dev`
+15. Connect your wallet on the localhost network!
 
 ## About testing
 
