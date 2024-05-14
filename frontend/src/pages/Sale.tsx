@@ -114,7 +114,7 @@ const Sale = () => {
             ) : (
               <div className="flex flex-col">
                 <span
-                  className="italic font-[600] p-10 text-center xl:text-xl"
+                  className="italic font-[600] p-10 text-center cursor-pointer xl:text-xl"
                   onClick={() => dispatch(setHamburgerMenuIsOpen())}
                 >
                   Connect your account to view vehicles in sale
