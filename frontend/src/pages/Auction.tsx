@@ -1,10 +1,11 @@
 import React from "react";
-import { useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
 import { abi } from "../artifacts/contracts/VehicleAuctions.sol/VehicleAuctions.json";
 import { Link } from "react-router-dom";
 import { setCurrentVehicle } from "../state/vehicle/vehicleSlice";
+import { setHamburgerMenuIsOpen } from "../state/navbar/navbarSlice";
 
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
@@ -12,11 +13,12 @@ import ImageMission from "../assets/5fcfe0b8f3d03a879fe49d11_timur-romanov-osNaW
 import { Helmet } from "react-helmet";
 
 const Auction = () => {
+  const account = useAccount();
+  const dispatch = useDispatch();
+
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
   );
-
-  const dispatch = useDispatch();
 
   const { data: auctionsVehicles } = useReadContract({
     abi,
@@ -78,7 +80,7 @@ const Auction = () => {
                   </div>
                 </div>
               ))
-            ) : (
+            ) : account.status === "connected" ? (
               <div className="flex flex-col">
                 <span className="italic font-[600] p-10 text-center xl:text-xl">
                   In this moment there aren't vehicles in auction. In the next 7
@@ -105,6 +107,15 @@ const Auction = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                <span
+                  className="italic font-[600] p-10 text-center cursor-pointer xl:text-xl"
+                  onClick={() => dispatch(setHamburgerMenuIsOpen())}
+                >
+                  Connect your account to view vehicles in sale
+                </span>
               </div>
             )}
           </div>
