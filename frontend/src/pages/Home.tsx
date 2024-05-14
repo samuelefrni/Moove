@@ -1,8 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useAccount, useConnect } from "wagmi";
-import { walletConnect } from "wagmi/connectors";
-import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import HamburgerMenu from "../components/HamburgerMenu";
@@ -17,9 +14,6 @@ import ImageAuction from "../assets/GettyImages-50947488-e1511307648580.jpg";
 import { Helmet } from "react-helmet";
 
 const Home = () => {
-  const account = useAccount();
-  const { connect } = useConnect();
-
   const hamburgerMenuIsOpen = useSelector(
     (state: RootState) => state.navbar.hamburgerMenuIsOpen
   );
@@ -38,28 +32,9 @@ const Home = () => {
               <p className="text-cyan-300 z-10 p-3 text-4xl bg-transparent font-bold lg:text-6xl lg:p-5 xl:text-7xl">
                 Cleaner Air
               </p>
-              {account.status == "connected" ? (
-                <button className="text-green-400 z-10 p-3 m-2 text-4xl bg-transparent rounded-xl font-bold lg:text-6xl lg:p-5 xl:text-7xl hover:underline hover:text-white">
-                  <Link to={"/account"}>
-                    <span className="button-text">{`${account.address
-                      .slice(0, 12)
-                      .toUpperCase()}...`}</span>
-                  </Link>
-                </button>
-              ) : (
-                <button
-                  className="text-green-400 z-10 p-3 m-2 text-4xl bg-transparent rounded-xl font-bold lg:text-6xl lg:p-5 xl:text-7xl hover:underline hover:text-white"
-                  onClick={() =>
-                    connect({
-                      connector: walletConnect({
-                        projectId: import.meta.env.VITE_PROJECT_ID,
-                      }),
-                    })
-                  }
-                >
-                  Connect Web3
-                </button>
-              )}
+              <p className="text-green-400 z-10 p-3 text-4xl bg-transparent font-bold lg:text-6xl lg:p-5 xl:text-7xl">
+                Less Traffic
+              </p>
               <p className="text-orange-400 z-10 p-3 text-4xl bg-transparent font-bold lg:text-6xl lg:p-5 xl:text-7xl">
                 More Joy
               </p>

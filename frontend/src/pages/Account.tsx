@@ -191,7 +191,7 @@ const Account = () => {
                     handleAddNewNFTSubmit(e)
                   }
                 >
-                  <span className="italic p-10 font-[600] text-center xl:text-2xl">
+                  <span className="italic p-10 font-[600] text-center text-xl xl:text-2xl">
                     Add new NFT vehicle
                   </span>
                   <p className="p-5 text-justify xl:text-xl">
@@ -247,7 +247,7 @@ const Account = () => {
                     handleAddAuctionNFTSubmit(e)
                   }
                 >
-                  <span className="italic p-10 font-[600] text-center xl:text-2xl">
+                  <span className="italic p-10 font-[600] text-center text-xl xl:text-2xl">
                     Add new auction for NFT vehicle
                   </span>
                   <p className="p-5 text-justify xl:text-xl">
@@ -291,7 +291,7 @@ const Account = () => {
                 </form>
                 <hr />
                 <div className="flex flex-col justify-center items-center text-center">
-                  <span className="italic p-10 font-[600] text-center xl:text-2xl">
+                  <span className="italic p-10 font-[600] text-center text-xl xl:text-2xl">
                     Purchased Vehicles
                   </span>
                   <p className="px-5 text-justify xl:text-xl">
@@ -345,52 +345,53 @@ const Account = () => {
                 <div className="bg-black">
                   <Navbar />
                 </div>
-                <div className="flex flex-col">
-                  <span className="p-10 text-center text-2xl italic xl:text-4xl">
-                    {account.address?.slice(0, 12)}...
-                  </span>
-                  <div className="flex flex-col items-center p-5 text-center">
-                    <span className="font-[600] text-2xl p-5 xl:text-4xl">
-                      Purchased for 24h
-                    </span>
-                    {Array.isArray(purchasedVehiclesByAddress) &&
-                      purchasedVehiclesByAddress.length > 0 &&
-                      purchasedVehiclesByAddress.map((vehicle) => (
-                        <div key={vehicle}>
-                          <Link
-                            to={`/vehicle/${Number(vehicle)}`}
-                            onClick={() =>
-                              dispatch(setCurrentVehicle(Number(vehicle)))
-                            }
-                          >
-                            <p className="p-5 text-2xl xl:text-4xl">
-                              {Number(vehicle)}
-                            </p>
-                          </Link>
-                        </div>
-                      ))}
-                    <span className="font-[600] text-2xl p-5 text-center xl:text-4xl">
-                      Purchased for 7 days
-                    </span>
-                    {Array.isArray(auctionPurchasedVehiclesByAddress) &&
-                      auctionPurchasedVehiclesByAddress.length > 0 &&
-                      auctionPurchasedVehiclesByAddress.map((vehicle) => (
-                        <div key={vehicle}>
-                          <Link
-                            to={`/vehicle/${Number(vehicle)}`}
-                            onClick={() =>
-                              dispatch(setCurrentVehicle(Number(vehicle)))
-                            }
-                          >
-                            <p
-                              className="p-5 text-2xl xl:text-4xl"
-                              key={vehicle}
+                <div>
+                  <div className="flex flex-col xl:flex-row">
+                    <div className="p-10 text-center xl:mr-auto">
+                      <span className="font-[600] text-2xl p-5 xl:text-4xl">
+                        Purchased for 24h
+                      </span>
+                      {Array.isArray(purchasedVehiclesByAddress) &&
+                        purchasedVehiclesByAddress.length > 0 &&
+                        purchasedVehiclesByAddress.map((vehicle) => (
+                          <div key={vehicle}>
+                            <Link
+                              to={`/vehicle/${Number(vehicle)}`}
+                              onClick={() =>
+                                dispatch(setCurrentVehicle(Number(vehicle)))
+                              }
                             >
-                              {Number(vehicle)}
-                            </p>
-                          </Link>
-                        </div>
-                      ))}
+                              <p className="p-5 text-2xl xl:text-4xl">
+                                {Number(vehicle)}
+                              </p>
+                            </Link>
+                          </div>
+                        ))}
+                    </div>
+                    <div className="p-10 text-center xl:ml-auto">
+                      <span className="font-[600] text-2xl p-5 xl:text-4xl">
+                        Purchased for 7 days
+                      </span>
+                      {Array.isArray(auctionPurchasedVehiclesByAddress) &&
+                        auctionPurchasedVehiclesByAddress.length > 0 &&
+                        auctionPurchasedVehiclesByAddress.map((vehicle) => (
+                          <div key={vehicle}>
+                            <Link
+                              to={`/vehicle/${Number(vehicle)}`}
+                              onClick={() =>
+                                dispatch(setCurrentVehicle(Number(vehicle)))
+                              }
+                            >
+                              <p
+                                className="p-5 text-2xl xl:text-4xl"
+                                key={vehicle}
+                              >
+                                {Number(vehicle)}
+                              </p>
+                            </Link>
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 </div>
               </div>

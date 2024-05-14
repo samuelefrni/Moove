@@ -1,6 +1,15 @@
 import React, { useState } from "react";
+import { useAccount, useConnect } from "wagmi";
+import { walletConnect, injected } from "wagmi/connectors";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setHamburgerMenuIsOpen } from "../state/navbar/navbarSlice";
 
 const HamburgerMenu = () => {
+  const account = useAccount();
+  const { connect } = useConnect();
+  const dispatch = useDispatch();
+
   const [expandItem, setExpandItem] = useState<string | null>();
 
   const handleExpand = (itemName: string) => {
@@ -14,6 +23,39 @@ const HamburgerMenu = () => {
   return (
     <React.StrictMode>
       <div>
+        <div className="text-center">
+          {account.status == "connected" ? (
+            <button className="z-10 p-3 m-2 text-2xl bg-transparent rounded-xl font-bold xl:text-6xl hover:underline">
+              <Link to={"/account"}>
+                <span
+                  className="button-text"
+                  onClick={() => dispatch(setHamburgerMenuIsOpen())}
+                >{`${account.address.slice(0, 12).toUpperCase()}...`}</span>
+              </Link>
+            </button>
+          ) : (
+            <div className="text-center p-5">
+              <button
+                className="text-white w-[250px] p-5 m-5 text-2xl bg-black rounded-xl font-bold xl:text-4xl xl:w-[350px] hover:underline"
+                onClick={() =>
+                  connect({
+                    connector: walletConnect({
+                      projectId: import.meta.env.VITE_PROJECT_ID,
+                    }),
+                  })
+                }
+              >
+                WalletConnect
+              </button>
+              <button
+                className="text-white w-[250px] p-5 m-5 text-2xl bg-black rounded-xl font-bold xl:text-4xl xl:w-[350px] hover:underline"
+                onClick={() => connect({ connector: injected() })}
+              >
+                Metamask
+              </button>
+            </div>
+          )}
+        </div>
         <ul className="flex flex-col font-[600] min-h-[600px]">
           <li className="text-3xl p-10 xl:text-4xl xl:p-15">
             <div className="flex justify-between">
