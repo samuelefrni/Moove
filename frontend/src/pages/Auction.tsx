@@ -52,7 +52,9 @@ const Auction = () => {
             <nav className="bg-black">
               <Navbar />
             </nav>
-            {Array.isArray(auctionsVehicles) && auctionsVehicles.length > 0 ? (
+            {account.status === "connected" &&
+            Array.isArray(auctionsVehicles) &&
+            auctionsVehicles.length > 0 ? (
               auctionsVehicles.map((idVehicle) => (
                 <div
                   className="relative overflow-hidden h-[250px] flex flex-col justify-end p-10"

@@ -52,7 +52,9 @@ const Sale = () => {
             <nav className="bg-black">
               <Navbar />
             </nav>
-            {Array.isArray(vehicleIds) && vehicleIds.length > 0 ? (
+            {account.status === "connected" &&
+            Array.isArray(vehicleIds) &&
+            vehicleIds.length > 0 ? (
               <div>
                 {vehicleIds.map((idVehicle) => (
                   <div
