@@ -48,6 +48,18 @@ The `expiryCheckAuction` function allows the contract owner to reclaim a vehicle
 
 Overall, the `VehicleAuctions` contract enhances `MooveToken` by adding vehicle auction functionalities, ensuring transparent and fair auction processes, supporting auction management, bid participation, vehicle withdrawal, and fund recovery, while maintaining detailed records and emitting key action events.
 
+## Frontend
+
+### Pages
+
+Below you'll find all the available navigation pages.
+
+- `Home`: This is the landing page of the Moove platform. It provides an overview of the service, highlighting key features and recent updates.
+- `Account`: The account page allows users to manage their personal information and view their subscription.
+- `Vehicle`: This page is dedicated at the vehicles available on the Moove platform. Users can browse through the different vehicles, view detailed information about each one, including specifications, availability status, and price. It also allows users to purchase the vehicle.
+- `Sale`: The sale page list all the vehicles available on the Moove platform. It displays vehicles listed for sale. Users can select a vehicle and be redirected to the dedicated page.
+- `Auction`: The auction page list all the available auctions vehicles on the Move platform. It displays vehicles listed for auction. Users can select a vehicle and be redirected to the dedicated page to make a bid.
+
 ## Importance of Wallet Provider
 
 To ensure the smooth functioning of the Moove project, it's crucial for users to have a compatible wallet provider installed. A wallet provider, such as MetaMask browser extension, plays a pivotal role in connecting users to the Ethereum blockchain and enabling secure transactions. Here's why having a wallet provider is essential:
