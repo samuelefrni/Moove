@@ -167,7 +167,7 @@ const Vehicle = () => {
                     pedana più ampia e un centro di gravità più basso che consentono il
                     pieno controllo del mezzo."
                     purchaseParagraph={`${infoVehicle?.[2]} ${infoVehicle?.[1]} ${infoVehicle?.[0]} è un veicolo di nuova generazione, che ti permetterà di muoverti con facilità in una guida veloce e confortevole.`}
-                    price={`Price: ${Number(infoVehicle?.[3])} wei`}
+                    price={Number(infoVehicle?.[3])}
                     avaible={infoVehicle?.[4]}
                   />
                 ) : (
@@ -182,7 +182,7 @@ const Vehicle = () => {
                   pedana più ampia e un centro di gravità più basso che consentono il
                   pieno controllo del mezzo."
                     purchaseParagraph={`${infoVehicle?.[2]} ${infoVehicle?.[1]} ${infoVehicle?.[0]} è un veicolo di nuova generazione, che ti permetterà di muoverti con facilità in una guida veloce e confortevole.`}
-                    price={`Price: ${Number(infoVehicle?.[3])} wei`}
+                    price={Number(infoVehicle?.[3])}
                     avaible={infoVehicle?.[4] || false}
                   />
                 )

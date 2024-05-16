@@ -12,7 +12,6 @@ import FAQ from "./FAQ";
 import { ICardVehicle } from "../interface";
 import { RootState } from "../state/store";
 import { Helmet } from "react-helmet";
-import { formatEther } from "viem";
 
 const CardVehicle: React.FC<ICardVehicle> = ({
   name,
@@ -27,7 +26,8 @@ const CardVehicle: React.FC<ICardVehicle> = ({
 }) => {
   const account = useAccount();
   const { data: balance } = useBalance({ address: account.address });
-  const balanceETH = balance?.value ? formatEther(balance.value) : 0;
+  const balanceWEI = balance?.value ? balance.value : 0;
+
   const { writeContract } = useWriteContract();
 
   const currentVehicle = useSelector(
@@ -154,9 +154,9 @@ const CardVehicle: React.FC<ICardVehicle> = ({
               {purchaseParagraph}
             </p>
             <p className="p-5 text-xl text-center lg:text-2xl xl:text-3xl">
-              {price}
+              {`Price: ${price} wei`}
             </p>
-            {avaible && balanceETH >= price ? (
+            {avaible && balanceWEI >= price ? (
               <button
                 className="bg-black text-white font-[600] rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:w-[300px] xl:px-6 xl:py-4"
                 onClick={() => purchaseVehicle(currentVehicle)}

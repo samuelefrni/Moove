@@ -18,7 +18,7 @@ export interface ICardVehicle {
   firstDescription: string;
   secondDescription: string;
   purchaseParagraph: string;
-  price: string;
+  price: number;
   avaible: boolean;
 }
 
