@@ -24,6 +24,42 @@ As you can see, to manage this project i choose to separete it in two folder:
 
 2. **Frontend**: This folder contains the frontend code for the Moove platform. It provides a user interface for interacting with the smart contracts, allowing users to browse available vehicles, place bids in auctions, and manage their Moove tokens. The frontend is built using React, a popular JavaScript library for building user interfaces, and it connects to the Ethereum blockchain using WAGMI, a Web3 library for interacting with Ethereum smart contracts.
 
+## Contracts
+
+### MooveToken.sol
+
+The `MooveToken` smart contract, written in Solidity, is the core of the Moove platform, enabling the management and transactions of NFTs representing vehicles. This contract uses the ERC-721 standard for Non-Fungible Tokens (NFTs) and extends functionalities provided by OpenZeppelin’s `ERC721` and `Ownable` contracts.
+
+The contract allows for the creation and management of NFTs through the `addVehicle` and `addVehicleAuctions` functions. The `addVehicle` function allows the contract owner to add new vehicles to the platform. Each vehicle is represented as an NFT with a unique ID, name, model, price, and availability status. Similarly, the `addVehicleAuctions` function adds vehicles specifically for auctions without a predefined price.
+
+The `buyNFTVehicle` function enables users to purchase available vehicles. It verifies the existence of the vehicle, checks if the vehicle is still owned by the platform, and ensures the buyer has sufficient funds. Upon a successful purchase, ownership is transferred to the buyer, and the vehicle’s availability status is updated.
+
+The contract handles transfers and ownership through the `transferFrom` function, which overrides the `transferFrom` function of ERC-721 to update vehicle owner details and emit an event. Additionally, the `expiryCheck` function verifies if a vehicle’s subscription has expired. If expired, the vehicle is reclaimed from the current owner and made available again.
+
+Several events, such as `NFTVehicleCreated`, `NFTVehicleBuyed`, `NFTVehicleTransferred`, `NFTAuctionsVehicles`, and `VehicleExpired`, are emitted at various points to log significant actions and state changes, facilitating better traceability and transparency.
+
+### VehicleAuctions.sol
+
+The `VehicleAuctions` extends the `MooveToken` smart contract to manage vehicle auctions. It includes events to track auction actions like start, bids, and vehicle withdrawals. Two structs, `Status` and `RecoverFunds`, manage auction status and bid records. Mappings track auction data, bids, and fund recovery statuses. The contract's constructor initializes the token name and symbol.
+
+The `startAuction` function begins an auction for a vehicle, setting its status and marking it as started. The `participateAuction` function allows users to place bids, checking if the auction is active and if the bid is higher than the current winning bid. The `withdrawNFT` function lets the auction winner withdraw the vehicle, transferring ownership and updating its status. The `recoverFunds` function enables non-winning participants to recover their funds after the auction ends and the winner withdraws the vehicle.
+
+The `expiryCheckAuction` function allows the contract owner to reclaim a vehicle after its subscription expires, making it available for auction again. Utility functions manage auction processes, including removing vehicles from auction lists and retrieving auction data. The `IdExist` modifier ensures the vehicle ID exists in the auction list.
+
+Overall, the `VehicleAuctions` contract enhances `MooveToken` by adding vehicle auction functionalities, ensuring transparent and fair auction processes, supporting auction management, bid participation, vehicle withdrawal, and fund recovery, while maintaining detailed records and emitting key action events.
+
+## Frontend
+
+### Pages
+
+Below you'll find all the available navigation pages.
+
+- `Home`: This is the landing page of the Moove platform. It provides an overview of the service, highlighting key features and recent updates.
+- `Account`: The account page allows users to manage their personal information and view their subscription.
+- `Vehicle`: This page is dedicated at the vehicles available on the Moove platform. Users can browse through the different vehicles, view detailed information about each one, including specifications, availability status, and price. It also allows users to purchase the vehicle.
+- `Sale`: The sale page list all the vehicles available on the Moove platform. It displays vehicles listed for sale. Users can select a vehicle and be redirected to the dedicated page.
+- `Auction`: The auction page list all the available auctions vehicles on the Move platform. It displays vehicles listed for auction. Users can select a vehicle and be redirected to the dedicated page to make a bid.
+
 ## Importance of Wallet Provider
 
 To ensure the smooth functioning of the Moove project, it's crucial for users to have a compatible wallet provider installed. A wallet provider, such as MetaMask browser extension, plays a pivotal role in connecting users to the Ethereum blockchain and enabling secure transactions. Here's why having a wallet provider is essential:
