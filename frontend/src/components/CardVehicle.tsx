@@ -40,12 +40,29 @@ const CardVehicle: React.FC<ICardVehicle> = ({
     functionName: "owner",
   });
 
+  const { data: currentTimestamp } = useReadContract({
+    abi: [
+      {
+        inputs: [],
+        name: "getCurrentTimestamp",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
+    functionName: "getCurrentTimestamp",
+  });
+
   const { data: infoVehicle } = useReadContract({
     abi: [
       {
-        type: "function",
-        name: "detailsVehicle",
-        stateMutability: "view",
         inputs: [
           {
             internalType: "uint256",
@@ -53,6 +70,7 @@ const CardVehicle: React.FC<ICardVehicle> = ({
             type: "uint256",
           },
         ],
+        name: "detailsVehicle",
         outputs: [
           {
             internalType: "uint256",
@@ -84,7 +102,14 @@ const CardVehicle: React.FC<ICardVehicle> = ({
             name: "owner",
             type: "address",
           },
+          {
+            internalType: "uint256",
+            name: "willEndAt",
+            type: "uint256",
+          },
         ],
+        stateMutability: "view",
+        type: "function",
       },
     ],
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
@@ -105,21 +130,14 @@ const CardVehicle: React.FC<ICardVehicle> = ({
   };
 
   const expiryCheck = (idVehicle: number) => {
-    writeContract(
-      {
-        abi,
-        address: import.meta.env.VITE_CONTRACT_ADDRESS,
-        account: account.address,
-        functionName: "expiryCheck",
-        args: [idVehicle],
-        // nonce: ,
-      },
-      {
-        onError: (e) => {
-          alert(e.message);
-        },
-      }
-    );
+    writeContract({
+      abi,
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
+      account: account.address,
+      functionName: "expiryCheck",
+      args: [idVehicle],
+      // nonce:,
+    });
   };
 
   return (
@@ -158,12 +176,15 @@ const CardVehicle: React.FC<ICardVehicle> = ({
             </p>
             {avaible && balanceWEI >= price ? (
               <button
-                className="bg-black text-white font-[600] rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:w-[300px] xl:px-6 xl:py-4"
+                className="bg-black text-white font-[600] rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:text-4xl xl:w-[300px] xl:px-8 xl:py-4"
                 onClick={() => purchaseVehicle(currentVehicle)}
               >
                 Purchase
               </button>
-            ) : account.address === ownerOfContract ? (
+            ) : account.address === ownerOfContract &&
+              currentTimestamp &&
+              infoVehicle?.[6] &&
+              currentTimestamp > infoVehicle?.[6] ? (
               <button
                 className="bg-black text-white font-[600] rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:w-[300px] xl:px-6 xl:py-4"
                 onClick={() => expiryCheck(currentVehicle)}
