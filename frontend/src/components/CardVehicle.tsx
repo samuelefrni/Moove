@@ -145,7 +145,9 @@ const CardVehicle: React.FC<ICardVehicle> = ({
             <p className="p-10 text-xl text-justify lg:text-2xl lg:w-[600px] xl:text-3xl xl:w-[900px]">
               {purchaseParagraph}
             </p>
-            <p className="p-5 text-xl lg:text-2xl xl:text-3xl">{price}</p>
+            <p className="p-5 text-xl text-center lg:text-2xl xl:text-3xl">
+              {price}
+            </p>
             {avaible ? (
               <button
                 className="bg-black text-white font-[600] rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:w-[300px] xl:px-6 xl:py-4"
