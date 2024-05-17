@@ -86,20 +86,28 @@ To install and test this project locally, follow these steps:
 2. Navigate to the contracts folder
 3. Install the dependencies of the contracts folder: `npm install`
 4. Go to `hardhat.config.ts` and follow the instruction before compile contracts
-5. Compile contracts: `npx hardhat compile`
-6. Run tests: `npx hardhat test`
-7. Run: `npx hardhat node` to run a blockchain on your local enviroment
-8. Add the localhost network on your Metamask wallet and import an account from the local blockchain
-9. While the node is still running, deploy the smart contracts on your local blockchain
-10. Run: `npx hardhat run .\ignition\modules\deploy.ts --network localhost`
-11. Navigate to the frontend folder
-12. Create a `.env.local` file on the frontend folder
-13. Create two variables on the `.env.local` file
+5. Compile contracts: `npx hardhat compile` and after run tests: `npx hardhat test`
+6. Run: `npx hardhat node` to run a blockchain on your local enviroment
+7. Add the localhost network on your wallet and import the first account from the local blockchain list
+8. While the node is still running, open another terminal, navigate to the contracts folder and deploy the smart contracts
+9. To deploy the smart contracts run: `npx hardhat run .\ignition\modules\deploy.ts --network localhost`
+10. Look at the deployed address that should show up in the terminal and save it
+11. Always remember to not close the terminal where the blockchain is running
+12. Navigate to the frontend folder
+13. Create a `.env.local` file on the frontend folder and in it create two variables
 14. The first variable `VITE_PROJECT_ID=YOUR_PROJECT_ID` is about the id for the WalletConnect
 15. The second variable `VITE_CONTRACT_ADDRESS=CONTRACT_ADDRESS` is about the address of the contract
-16. Install the dependencies of the frontend folder: `npm install`
-17. Run the app with: `npm run dev`
-18. Connect your wallet on the localhost network!
+16. `The second variable is crucial` for the purpose of the project, in it you should add the deployed address of the contract
+17. Install the dependencies of the frontend folder: `npm install`
+18. Run the app with: `npm run dev` and connect your wallet!
+
+### Important
+
+A blockchain, from a logical point of view, is nothing more than a "finite state machine", which in technical jargon refers to a system that can exist in a finite number of possible states and changes state only in the presence of a specific predictable event. In our case, only one `transaction` can change the state of the blockchain. When we go to write a smart contract in our local project, we will have to remember to manually mark the `nonce` property, this is because being local we will be the ones to mark the transaction number, starting from 1. This step is essential to ensure that in our local blockchain state changes occur.
+
+<img src="./frontend/src/assets/Screenshot 2024-05-17 152551.png" width="300px">
+
+**_Example, in the Account page, before adding a vehicle mark the nonce property_**
 
 ## Implementing a Keeper
 
