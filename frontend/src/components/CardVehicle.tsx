@@ -93,16 +93,6 @@ const CardVehicle: React.FC<ICardVehicle> = ({
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "available",
-            type: "bool",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
             internalType: "uint256",
             name: "willEndAt",
             type: "uint256",
@@ -183,8 +173,8 @@ const CardVehicle: React.FC<ICardVehicle> = ({
               </button>
             ) : account.address === ownerOfContract &&
               currentTimestamp &&
-              infoVehicle?.[6] &&
-              currentTimestamp > infoVehicle?.[6] ? (
+              infoVehicle?.[4] &&
+              currentTimestamp > infoVehicle?.[4] ? (
               <button
                 className="bg-black text-white font-[600] rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:w-[300px] xl:px-6 xl:py-4"
                 onClick={() => expiryCheck(currentVehicle)}

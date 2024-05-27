@@ -22,7 +22,6 @@ const Account = () => {
   const dispatch = useDispatch();
 
   const [formVehicleInfo, setFormVehicleInfo] = useState<IFormVehicleInfo>({
-    id: "",
     name: "",
     model: "",
     price: "",
@@ -30,7 +29,6 @@ const Account = () => {
 
   const [formAuctionVehicleInfo, setFormAuctionVehicleInfo] =
     useState<IFormAuctionVehicleInfo>({
-      id: "",
       name: "",
       model: "",
     });
@@ -44,26 +42,26 @@ const Account = () => {
   const { data: purchasedVehicle } = useReadContract({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "arrayVehiclesPurchased",
+    functionName: "purchasedVehicleIds",
   });
 
   const { data: auctionVehiclePurchased } = useReadContract({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "arrayAuctionVehiclePurchased",
+    functionName: "purchasedAuctionVehicleIds",
   });
 
   const { data: purchasedVehiclesByAddress } = useReadContract({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "arrayPurchasedVehiclesByAddress",
+    functionName: "purchasedVehiclesByAddress",
     args: [account.address],
   });
 
   const { data: auctionPurchasedVehiclesByAddress } = useReadContract({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "arrayAuctionVehiclePurchasedByAddress",
+    functionName: "purchasedAuctionVehiclesByAddress",
     args: [account.address],
   });
 
@@ -85,7 +83,6 @@ const Account = () => {
   };
 
   const handleAddVehicleTx = (
-    id: number,
     name: string | number,
     model: string | number,
     price: number
@@ -95,13 +92,12 @@ const Account = () => {
       address: import.meta.env.VITE_CONTRACT_ADDRESS,
       account: account.address,
       functionName: "addVehicle",
-      args: [id, name, model, price],
+      args: [name, model, price],
       // nonce:,
     });
   };
 
   const handleAddAuctionVehicleTx = (
-    id: number,
     name: string | number,
     model: string | number
   ) => {
@@ -110,7 +106,7 @@ const Account = () => {
       address: import.meta.env.VITE_CONTRACT_ADDRESS,
       account: account.address,
       functionName: "addVehicleAuctions",
-      args: [id, name, model],
+      args: [name, model],
       // nonce:,
     });
   };
@@ -118,19 +114,16 @@ const Account = () => {
   const handleAddNewNFTSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
-      formVehicleInfo.id &&
       formVehicleInfo.name &&
       formVehicleInfo.model &&
       formVehicleInfo.price
     ) {
       handleAddVehicleTx(
-        Number(formVehicleInfo.id),
         formVehicleInfo.name,
         formVehicleInfo.model,
         Number(formVehicleInfo.price)
       );
       setFormVehicleInfo({
-        id: "",
         name: "",
         model: "",
         price: "",
@@ -144,18 +137,12 @@ const Account = () => {
 
   const handleAddAuctionNFTSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      formAuctionVehicleInfo.id &&
-      formAuctionVehicleInfo.name &&
-      formAuctionVehicleInfo.model
-    ) {
+    if (formAuctionVehicleInfo.name && formAuctionVehicleInfo.model) {
       handleAddAuctionVehicleTx(
-        Number(formAuctionVehicleInfo.id),
         formAuctionVehicleInfo.name,
         formAuctionVehicleInfo.model
       );
       setFormAuctionVehicleInfo({
-        id: "",
         name: "",
         model: "",
       });
@@ -206,13 +193,6 @@ const Account = () => {
                   <div className="text-center my-5">
                     <input
                       type="text"
-                      placeholder="id"
-                      value={formVehicleInfo?.id}
-                      onChange={handleInputChangeAddVehicle}
-                      className="m-5 p-2 bg-gray-100 rounded-sm placeholder:text-lg xl:text-2xl"
-                    />
-                    <input
-                      type="text"
                       placeholder="name"
                       value={formVehicleInfo?.name}
                       onChange={handleInputChangeAddVehicle}
@@ -260,13 +240,6 @@ const Account = () => {
                     "price" field in this form because it will start with zero.
                   </p>
                   <div className="text-center my-5">
-                    <input
-                      type="text"
-                      placeholder="id"
-                      value={formAuctionVehicleInfo.id}
-                      onChange={handleInputChangeAddAuction}
-                      className="m-5 p-2 bg-gray-100 rounded-sm placeholder:text-lg xl:text-2xl"
-                    />
                     <input
                       type="text"
                       placeholder="name"

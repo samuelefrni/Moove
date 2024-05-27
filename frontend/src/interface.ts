@@ -37,14 +37,12 @@ export interface ICardAuction {
 }
 
 export interface IFormVehicleInfo {
-  id: number | string;
   name: string;
   model: string;
   price: number | string;
 }
 
 export interface IFormAuctionVehicleInfo {
-  id: number | string;
   name: string;
   model: string;
 }

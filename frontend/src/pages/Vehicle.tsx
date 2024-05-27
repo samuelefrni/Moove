@@ -18,12 +18,9 @@ const Vehicle = () => {
     (state: RootState) => state.vehicle.currentVehicle
   );
 
-  const { data: infoVehicle } = useReadContract({
+  const { data: availableVehicle } = useReadContract({
     abi: [
       {
-        type: "function",
-        name: "detailsVehicle",
-        stateMutability: "view",
         inputs: [
           {
             internalType: "uint256",
@@ -31,6 +28,34 @@ const Vehicle = () => {
             type: "uint256",
           },
         ],
+        name: "availableVehicle",
+        outputs: [
+          {
+            internalType: "bool",
+            name: "",
+            type: "bool",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+    address: import.meta.env.VITE_CONTRACT_ADDRESS,
+    functionName: "availableVehicle",
+    args: [BigInt(currentVehicle)],
+  });
+
+  const { data: infoVehicle } = useReadContract({
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        name: "detailsVehicle",
         outputs: [
           {
             internalType: "uint256",
@@ -53,16 +78,13 @@ const Vehicle = () => {
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "available",
-            type: "bool",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
+            internalType: "uint256",
+            name: "willEndAt",
+            type: "uint256",
           },
         ],
+        stateMutability: "view",
+        type: "function",
       },
     ],
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
@@ -76,11 +98,11 @@ const Vehicle = () => {
         inputs: [
           {
             internalType: "uint256",
-            name: "_idVehicle",
+            name: "",
             type: "uint256",
           },
         ],
-        name: "isAuctionStarted",
+        name: "isStarted",
         outputs: [
           {
             internalType: "bool",
@@ -93,7 +115,7 @@ const Vehicle = () => {
       },
     ],
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "isAuctionStarted",
+    functionName: "isStarted",
     args: [BigInt(currentVehicle)],
   });
 
@@ -168,7 +190,7 @@ const Vehicle = () => {
                     pieno controllo del mezzo."
                     purchaseParagraph={`${infoVehicle?.[2]} ${infoVehicle?.[1]} ${infoVehicle?.[0]} è un veicolo di nuova generazione, che ti permetterà di muoverti con facilità in una guida veloce e confortevole.`}
                     price={Number(infoVehicle?.[3])}
-                    avaible={infoVehicle?.[4]}
+                    avaible={availableVehicle || false}
                   />
                 ) : (
                   <CardVehicle
@@ -183,7 +205,7 @@ const Vehicle = () => {
                   pieno controllo del mezzo."
                     purchaseParagraph={`${infoVehicle?.[2]} ${infoVehicle?.[1]} ${infoVehicle?.[0]} è un veicolo di nuova generazione, che ti permetterà di muoverti con facilità in una guida veloce e confortevole.`}
                     price={Number(infoVehicle?.[3])}
-                    avaible={infoVehicle?.[4] || false}
+                    avaible={availableVehicle || false}
                   />
                 )
               ) : infoVehicle?.[1] === "Scooter" ? (

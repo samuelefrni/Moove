@@ -23,13 +23,13 @@ const Auction = () => {
   const { data: auctionsVehicles } = useReadContract({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "arrayAuctionsVehicles",
+    functionName: "availableAuctionVehicleIds",
   });
 
   const { data: auctionVehiclePurchased } = useReadContract({
     abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "arrayAuctionVehiclePurchased",
+    functionName: "purchasedAuctionVehicleIds",
   });
 
   return (

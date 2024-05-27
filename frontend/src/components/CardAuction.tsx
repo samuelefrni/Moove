@@ -70,16 +70,6 @@ const CardAuction: React.FC<ICardAuction> = ({
             type: "uint256",
           },
           {
-            internalType: "bool",
-            name: "available",
-            type: "bool",
-          },
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
             internalType: "uint256",
             name: "willEndAt",
             type: "uint256",
@@ -115,50 +105,17 @@ const CardAuction: React.FC<ICardAuction> = ({
   });
 
   const { data: hasWithdrawhed } = useReadContract({
-    abi: [
-      {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "_idVehicle",
-            type: "uint256",
-          },
-        ],
-        name: "hasWithdrawhed",
-        outputs: [
-          {
-            internalType: "bool",
-            name: "",
-            type: "bool",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
+    abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "hasWithdrawhed",
+    functionName: "withdrawhed",
     args: [BigInt(currentVehicle)],
   });
 
   const { data: hasRecoveredFunds } = useReadContract({
-    abi: [
-      {
-        inputs: [],
-        name: "hasRecoveredFunds",
-        outputs: [
-          {
-            internalType: "bool",
-            name: "",
-            type: "bool",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
+    abi,
     address: import.meta.env.VITE_CONTRACT_ADDRESS,
-    functionName: "hasRecoveredFunds",
+    functionName: "fundsRecovered",
+    args: [account.address],
   });
 
   const startAuction = (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -169,7 +126,7 @@ const CardAuction: React.FC<ICardAuction> = ({
       account: account.address,
       functionName: "startAuction",
       args: [currentVehicle],
-      // nonce: ,
+      // nonce:,
     });
   };
 
@@ -183,7 +140,7 @@ const CardAuction: React.FC<ICardAuction> = ({
           functionName: "participateAuction",
           args: [BigInt(idVehicle)],
           value: parseEther(valueInEther),
-          // nonce: ,
+          // nonce:,
         },
         {
           onError: (e) => {
@@ -201,7 +158,7 @@ const CardAuction: React.FC<ICardAuction> = ({
       account: account.address,
       functionName: "withdrawNFT",
       args: [currentVehicle],
-      // nonce: ,
+      // nonce:,
     });
   };
 
@@ -212,7 +169,7 @@ const CardAuction: React.FC<ICardAuction> = ({
       account: account.address,
       functionName: "recoverFunds",
       args: [currentVehicle],
-      // nonce: ,
+      // nonce:,
     });
   };
 
@@ -223,7 +180,7 @@ const CardAuction: React.FC<ICardAuction> = ({
       account: account.address,
       functionName: "expiryCheckAuction",
       args: [idVehicle],
-      // nonce: ,
+      // nonce:,
     });
   };
 
@@ -309,8 +266,8 @@ const CardAuction: React.FC<ICardAuction> = ({
               )
             ) : account.address === ownerOfContract &&
               currentTimestamp &&
-              infoVehicle?.[6] &&
-              currentTimestamp > infoVehicle?.[6] ? (
+              infoVehicle?.[4] &&
+              currentTimestamp > infoVehicle?.[4] ? (
               <div>
                 <button
                   className="bg-black text-white rounded-lg text-2xl px-4 py-2 m-10 w-[200px] hover:text-black hover:bg-white xl:text-4xl"
