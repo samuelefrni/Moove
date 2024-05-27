@@ -5,7 +5,7 @@
 
   <p align="center">
     <br />
-    <a href="https://sepolia.etherscan.io/address/0x6e255909129930283806e40ca7bd798678338247"><strong>Contracts on the blockchain</strong></a>
+    <a href="https://sepolia.etherscan.io/address/0x9F722162594d186FA6f71AC0996D6873d498A12f"><strong>Contracts on the blockchain</strong></a>
     <br />
     <br />
     <a href="./frontend/src/assets/pdf/Progetto Finale Blockchain di Samuele Furnari.pdf">Presentation IT</a>
