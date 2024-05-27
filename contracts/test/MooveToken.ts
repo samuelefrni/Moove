@@ -35,7 +35,6 @@ describe("MooveToken", () => {
 
       await expect(
         MooveToken.connect(otherAccount).addVehicle(
-          12345,
           "Bike",
           "Electric",
           ethers.parseEther("0.1")
@@ -45,25 +44,18 @@ describe("MooveToken", () => {
     it("Should add the vehicle and generete the ERC721 token", async () => {
       const { owner, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("0.1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("0.1"));
 
-      expect(await MooveToken.availableVehicle(12345)).to.equal(true);
-      expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
-        BigInt(12345),
+      expect(await MooveToken.availableVehicle(1)).to.equal(true);
+      expect(await MooveToken.detailsVehicle(1)).to.deep.equal([
+        BigInt(1),
         "Bike",
         "Electric",
         ethers.parseEther("0.1"),
-        true,
-        owner.address,
         0,
       ]);
       expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
-      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
+      expect(await MooveToken.availableVehicleIds()).to.deep.equal([BigInt(1)]);
     });
   });
   describe("Testing addVehicleAuctions function", () => {
@@ -71,31 +63,25 @@ describe("MooveToken", () => {
       const { otherAccount, MooveToken } = await loadFixture(deploy);
 
       await expect(
-        MooveToken.connect(otherAccount).addVehicleAuctions(
-          12345,
-          "Bike",
-          "Electric"
-        )
+        MooveToken.connect(otherAccount).addVehicleAuctions("Bike", "Electric")
       ).to.be.reverted;
     });
     it("Should add the vehicle and generete the ERC721 token", async () => {
       const { owner, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicleAuctions(12345, "Bike", "Electric");
+      await MooveToken.addVehicleAuctions("Bike", "Electric");
 
-      expect(await MooveToken.availableVehicle(12345)).to.equal(true);
-      expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
-        BigInt(12345),
+      expect(await MooveToken.availableVehicle(1)).to.equal(true);
+      expect(await MooveToken.detailsVehicle(1)).to.deep.equal([
+        BigInt(1),
         "Bike",
         "Electric",
         0,
-        true,
-        owner.address,
         0,
       ]);
       expect(await MooveToken.balanceOf(owner.address)).to.equal(1);
-      expect(await MooveToken.arrayAuctionsVehicles()).to.deep.equal([
-        BigInt(12345),
+      expect(await MooveToken.availableAuctionVehicleIds()).to.deep.equal([
+        BigInt(1),
       ]);
     });
   });
@@ -103,21 +89,16 @@ describe("MooveToken", () => {
     it("Should revert if the vehicle doesn't exist", async () => {
       const { MooveToken } = await loadFixture(deploy);
 
-      await expect(MooveToken.buyNFTVehicle(12345)).to.revertedWith(
+      await expect(MooveToken.buyNFTVehicle(1)).to.revertedWith(
         "Vehicle doesn't found"
       );
     });
     it("Should revert if the sender doesn't have enough funds", async () => {
       const { MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("0.1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("0.1"));
 
-      await expect(MooveToken.buyNFTVehicle(12345)).to.revertedWith(
+      await expect(MooveToken.buyNFTVehicle(1)).to.revertedWith(
         "Doesn't have enough funds to buy this vehicle"
       );
     });
@@ -126,56 +107,47 @@ describe("MooveToken", () => {
         deploy
       );
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("0.1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("0.1"));
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(1, {
         value: ethers.parseEther("0.1"),
       });
 
-      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount);
+      expect(await MooveToken.ownerOf(1)).to.equal(otherAccount);
 
       await expect(
-        MooveToken.connect(otherAccount3).buyNFTVehicle(12345, {
+        MooveToken.connect(otherAccount3).buyNFTVehicle(1, {
           value: ethers.parseEther("0.1"),
         })
-      ).to.be.revertedWith("Vehicle doesn't found");
+      ).to.be.revertedWith(
+        "The vehicle has already been taken by another user"
+      );
     });
-    it("Should remove the NFT from the array after the purchase of the user", async () => {
+    it("Should remove the NFT from the availableVehicleIds after the purchase of the user", async () => {
       const { otherAccount, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("0.1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("0.1"));
 
-      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
+      expect(await MooveToken.availableVehicleIds()).to.deep.equal([BigInt(1)]);
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(1, {
         value: ethers.parseEther("0.1"),
       });
 
-      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount);
+      expect(await MooveToken.ownerOf(1)).to.equal(otherAccount);
 
-      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([]);
+      expect(await MooveToken.availableVehicleIds()).to.deep.equal([]);
     });
     it("Should transfer the NFT to the buyer and change the metadata", async () => {
       const { owner, otherAccount, MooveToken } = await loadFixture(deploy);
 
       await MooveToken.connect(owner).addVehicle(
-        12345,
         "Bike",
         "Electric",
         ethers.parseEther("0.1")
       );
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(1, {
         value: ethers.parseEther("0.1"),
       });
 
@@ -184,35 +156,28 @@ describe("MooveToken", () => {
       const timestamp = provider?.timestamp || 0;
 
       expect(await MooveToken.balanceOf(otherAccount)).to.equal(1);
-      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount.address);
-      expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
-        BigInt(12345),
+      expect(await MooveToken.ownerOf(1)).to.equal(otherAccount.address);
+      expect(await MooveToken.detailsVehicle(1)).to.deep.equal([
+        BigInt(1),
         "Bike",
         "Electric",
         ethers.parseEther("0.1"),
-        false,
-        otherAccount.address,
         timestamp + 1 * 24 * 60 * 60,
       ]);
       expect(await MooveToken.availableVehicle(12345)).to.equal(false);
     });
-    it("Shuold add the NFT vehicle to the purchasedVehicles mapping of the sender", async () => {
+    it("Shuold add the NFT vehicle to the purchasedVehiclesByAddress of the sender", async () => {
       const { otherAccount, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("1"));
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(1, {
         value: ethers.parseEther("1"),
       });
 
       expect(
-        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount.address)
-      ).to.deep.equal([BigInt(12345)]);
+        await MooveToken.purchasedVehiclesByAddress(otherAccount.address)
+      ).to.deep.equal([BigInt(1)]);
     });
   });
   describe("Testing transferFrom function", () => {
@@ -220,7 +185,6 @@ describe("MooveToken", () => {
       const { owner, otherAccount, MooveToken } = await loadFixture(deploy);
 
       await MooveToken.connect(owner).addVehicle(
-        12345,
         "Bike",
         "Electric",
         ethers.parseEther("0.1")
@@ -230,7 +194,7 @@ describe("MooveToken", () => {
         MooveToken.connect(otherAccount).transferFrom(
           owner.address,
           otherAccount.address,
-          12345
+          1
         )
       ).to.be.reverted;
     });
@@ -238,7 +202,6 @@ describe("MooveToken", () => {
       const { owner, otherAccount, MooveToken } = await loadFixture(deploy);
 
       await MooveToken.connect(owner).addVehicle(
-        12345,
         "Bike",
         "Electric",
         ethers.parseEther("0.1")
@@ -247,17 +210,15 @@ describe("MooveToken", () => {
       await MooveToken.connect(owner).transferFrom(
         owner.address,
         otherAccount.address,
-        12345
+        1
       );
 
-      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount.address);
-      expect(await MooveToken.detailsVehicle(12345)).to.deep.equal([
-        BigInt(12345),
+      expect(await MooveToken.ownerOf(1)).to.equal(otherAccount.address);
+      expect(await MooveToken.detailsVehicle(1)).to.deep.equal([
+        BigInt(1),
         "Bike",
         "Electric",
         ethers.parseEther("0.1"),
-        true,
-        otherAccount.address,
         0,
       ]);
     });
@@ -273,159 +234,163 @@ describe("MooveToken", () => {
     it("Should revert if the subscription has not yet expired", async () => {
       const { otherAccount, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("1"));
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(1, {
         value: ethers.parseEther("1"),
       });
 
-      await expect(MooveToken.expiryCheck(12345)).to.be.revertedWith(
+      await expect(MooveToken.expiryCheck(1)).to.be.revertedWith(
         "The subscription has not yet expired"
       );
     });
-    it("Should make the NFT vehicle avaible and push it to the allVehicle array", async () => {
+    it("Should make the NFT vehicle avaible", async () => {
       const { owner, otherAccount, MooveToken } = await loadFixture(deploy);
 
       await MooveToken.connect(owner).addVehicle(
-        12345,
         "Bike",
         "Electric",
         ethers.parseEther("1")
       );
 
-      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
+      expect(await MooveToken.availableVehicleIds()).to.deep.equal([BigInt(1)]);
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(12345, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(1, {
         value: ethers.parseEther("1"),
       });
 
-      expect(await MooveToken.ownerOf(12345)).to.equal(otherAccount.address);
-      expect(await MooveToken.availableVehicle(12345)).to.equal(false);
-      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([]);
-      expect(await MooveToken.arrayVehiclesPurchased()).to.deep.equal([
-        BigInt(12345),
-      ]);
+      expect(await MooveToken.ownerOf(1)).to.equal(otherAccount.address);
+      expect(await MooveToken.availableVehicle(1)).to.equal(false);
+      expect(await MooveToken.availableVehicleIds()).to.deep.equal([]);
+      expect(await MooveToken.purchasedVehicleIds()).to.deep.equal([BigInt(1)]);
       expect(
-        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount.address)
-      ).to.deep.equal([BigInt(12345)]);
+        await MooveToken.purchasedVehiclesByAddress(otherAccount.address)
+      ).to.deep.equal([BigInt(1)]);
 
       await ethers.provider.send("evm_increaseTime", [100000000]);
       await ethers.provider.send("evm_mine");
 
-      await expect(await MooveToken.connect(owner).expiryCheck(12345))
+      await expect(await MooveToken.connect(owner).expiryCheck(1))
         .to.emit(MooveToken, "VehicleExpired")
-        .withArgs(12345);
+        .withArgs(1);
 
-      expect(await MooveToken.availableVehicle(12345)).to.equal(true);
-      expect(await MooveToken.arrayVehicleIds()).to.deep.equal([BigInt(12345)]);
-      expect(await MooveToken.arrayVehiclesPurchased()).to.deep.equal([]);
+      expect(await MooveToken.availableVehicle(1)).to.equal(true);
+      expect(await MooveToken.purchasedVehicleIds()).to.deep.equal([]);
       expect(
-        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount.address)
+        await MooveToken.purchasedVehiclesByAddress(otherAccount.address)
       ).to.deep.equal([]);
 
-      await MooveToken.connect(owner).buyNFTVehicle(12345, {
+      await MooveToken.connect(owner).buyNFTVehicle(1, {
         value: ethers.parseEther("1"),
       });
 
-      expect(await MooveToken.ownerOf(12345)).to.equal(owner.address);
+      expect(await MooveToken.ownerOf(1)).to.equal(owner.address);
       expect(
-        await MooveToken.arrayPurchasedVehiclesByAddress(owner.address)
-      ).to.deep.equal([BigInt(12345)]);
+        await MooveToken.purchasedVehiclesByAddress(owner.address)
+      ).to.deep.equal([BigInt(1)]);
     });
   });
-  describe("Testing arrayVehicleIds function", () => {
-    it("Should return the array of the allVehicle", async () => {
+  describe("Testing availableVehicleIds function", () => {
+    it("Should return the avaible vehicle ids", async () => {
       const { MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("1"));
 
       await MooveToken.addVehicle(
-        246810,
         "Scooter",
         "Electric",
         ethers.parseEther("1")
       );
 
-      const vehicleIds = await MooveToken.arrayVehicleIds();
-
-      expect(vehicleIds).to.deep.equal([BigInt(12345), BigInt(246810)]);
-    });
-  });
-  describe("Testing arrayVehiclesPurchased function", () => {
-    it("Should return the array of the purchased vehicle", async () => {
-      const { MooveToken } = await loadFixture(deploy);
-
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("1")
-      );
-
-      await MooveToken.addVehicle(
-        246810,
-        "Scooter",
-        "Electric",
-        ethers.parseEther("1")
-      );
-
-      await MooveToken.buyNFTVehicle(12345, { value: ethers.parseEther("1") });
-
-      expect(await MooveToken.arrayVehiclesPurchased()).to.deep.equal([
-        BigInt(12345),
+      expect(await MooveToken.availableVehicleIds()).to.deep.equal([
+        BigInt(1),
+        BigInt(2),
       ]);
     });
   });
-  describe("Testing arrayPurchasedVehiclesByAddress function", () => {
+  describe("Testing availableAuctionVehicleIds function", () => {
+    it("Should return the avaible auction vehicle ids", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicleAuctions("Bike", "Electric");
+
+      await MooveToken.addVehicleAuctions("Scooter", "Electric");
+
+      expect(await MooveToken.availableAuctionVehicleIds()).to.deep.equal([
+        BigInt(1),
+        BigInt(2),
+      ]);
+    });
+  });
+  describe("Testing purchasedVehicleIds function", () => {
+    it("Should return the purchased vehicle", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("1"));
+
+      await MooveToken.addVehicle(
+        "Scooter",
+        "Electric",
+        ethers.parseEther("1")
+      );
+
+      await MooveToken.buyNFTVehicle(1, { value: ethers.parseEther("1") });
+
+      expect(await MooveToken.purchasedVehicleIds()).to.deep.equal([BigInt(1)]);
+    });
+  });
+  describe("Testing purchasedAuctionVehicleIds function", () => {
+    it("Should return the purchased auciton vehicle", async () => {
+      const { MooveToken } = await loadFixture(deploy);
+
+      await MooveToken.addVehicleAuctions("Bike", "Electric");
+
+      await MooveToken.addVehicleAuctions("Scooter", "Electric");
+
+      await MooveToken.buyNFTVehicle(1, { value: ethers.parseEther("1") });
+
+      expect(await MooveToken.purchasedAuctionVehicleIds()).to.deep.equal([
+        BigInt(1),
+      ]);
+    });
+  });
+  describe("Testing purchasedVehiclesByAddress function", () => {
     it("Should return the array of the purchased vehicle by a specific account", async () => {
       const { otherAccount, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicle(
-        12345,
-        "Bike",
-        "Electric",
-        ethers.parseEther("1")
-      );
+      await MooveToken.addVehicle("Bike", "Electric", ethers.parseEther("1"));
 
       await MooveToken.addVehicle(
-        246810,
         "Scooter",
         "Electric",
         ethers.parseEther("1")
       );
 
-      await MooveToken.buyNFTVehicle(12345, { value: ethers.parseEther("1") });
+      await MooveToken.buyNFTVehicle(1, { value: ethers.parseEther("1") });
 
-      await MooveToken.connect(otherAccount).buyNFTVehicle(246810, {
+      await MooveToken.connect(otherAccount).buyNFTVehicle(2, {
         value: ethers.parseEther("1"),
       });
 
       expect(
-        await MooveToken.arrayPurchasedVehiclesByAddress(otherAccount)
-      ).to.deep.equal([BigInt(246810)]);
+        await MooveToken.purchasedVehiclesByAddress(otherAccount.address)
+      ).to.deep.equal([BigInt(2)]);
     });
   });
-  describe("Testing arrayAuctionsVehicles function", () => {
-    it("Should return the array of the allAuctionsVehicles", async () => {
-      const { MooveToken } = await loadFixture(deploy);
+  //  DA TESTARE IN VEHICLEAUCTION CONTRACT IN QUANTO NON POSSO INIZIARE L'ASTA
+  // describe("Testing purchasedAuctionVehiclesByAddress function", () => {
+  //   it("Should return the array of the purchased auction vehicle by a specific account", async () => {
+  //     const { otherAccount, MooveToken } = await loadFixture(deploy);
 
-      await MooveToken.addVehicleAuctions(12345, "Bike", "Electric");
+  //     await MooveToken.addVehicleAuctions("Bike", "Electric");
 
-      expect(await MooveToken.arrayAuctionsVehicles()).to.deep.equal([
-        BigInt(12345),
-      ]);
-    });
-  });
+  //     await MooveToken.
+
+  //     expect(
+  //       await MooveToken.purchasedAuctionVehiclesByAddress(otherAccount.address)
+  //     ).to.deep.equal([BigInt(2)]);
+  //   });
+  // });
   describe("Testing getCurrentTimestamp function", () => {
     it("Should return the correct block timestamp", async () => {
       const { MooveToken } = await loadFixture(deploy);

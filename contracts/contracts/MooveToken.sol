@@ -20,91 +20,74 @@ contract MooveToken is ERC721, Ownable {
         string name;
         string model;
         uint256 priceVehicle;
-        bool available;
-        address owner;
         uint256 willEndAt;
     }
 
-    address private _owner;
+    address internal _owner;
+    uint256 internal nextVehicleId;
+    uint256[] internal allVehicle;
 
     mapping(uint256 => Vehicle) public detailsVehicle;
+    mapping(uint256 => bool) public isAuctionVehicle;
     mapping(uint256 => bool) public availableVehicle;
-
-    mapping(address => uint256[]) internal purchasedVehiclesByAccount;
-    mapping(address => uint256[]) internal purchasedAuctionVehiclesByAccount;
-
-    uint256[] internal allVehicle;
-    uint256[] internal vehiclesPurchased;
-
-    uint256[] internal allAuctionsVehicles;
-    uint256[] internal auctionVehiclePurchased;
+    mapping(address => uint256[]) public purchasedVehiclesByAccount;
+    mapping(address => uint256[]) public purchasedAuctionVehiclesByAccount;
 
     constructor(
         string memory _nameToken,
         string memory _symbolToken
     ) ERC721(_nameToken, _symbolToken) Ownable(msg.sender) {
         _owner = msg.sender;
+        nextVehicleId = 0;
     }
 
     function addVehicle(
-        uint256 _id,
         string memory _name,
         string memory _model,
         uint256 _priceVehicle
     ) external onlyOwner {
+        nextVehicleId++;
+        uint256 _id = nextVehicleId;
         detailsVehicle[_id] = Vehicle({
             id: _id,
             name: _name,
             model: _model,
             priceVehicle: _priceVehicle,
-            available: true,
-            owner: msg.sender,
             willEndAt: 0
         });
-        availableVehicle[_id] = true;
         allVehicle.push(_id);
+        availableVehicle[_id] = true;
         _safeMint(msg.sender, _id);
         emit NFTVehicleCreated(_name, _model);
     }
 
     function addVehicleAuctions(
-        uint256 _id,
         string memory _name,
         string memory _model
     ) external onlyOwner {
+        nextVehicleId++;
+        uint256 _id = nextVehicleId;
         detailsVehicle[_id] = Vehicle({
             id: _id,
             name: _name,
             model: _model,
             priceVehicle: 0,
-            available: true,
-            owner: msg.sender,
             willEndAt: 0
         });
+        allVehicle.push(_id);
+        isAuctionVehicle[_id] = true;
         availableVehicle[_id] = true;
-        allAuctionsVehicles.push(_id);
         _safeMint(msg.sender, _id);
         emit NFTAuctionsVehicles(_name, _model);
     }
 
     function buyNFTVehicle(uint256 _idVehicle) external payable {
-        bool found = false;
-        uint256 indexVehicle;
-
-        for (uint i = 0; i < allVehicle.length; i++) {
-            if (allVehicle[i] == _idVehicle) {
-                found = true;
-                indexVehicle = i;
-                break;
-            }
-        }
+        require(_idVehicle <= nextVehicleId, "Vehicle doesn't found");
 
         uint256 priceVehicle = detailsVehicle[_idVehicle].priceVehicle;
-        address ownerVehicle = detailsVehicle[_idVehicle].owner;
 
-        require(found == true, "Vehicle doesn't found");
         require(
-            detailsVehicle[_idVehicle].owner == _owner,
+            ownerOf(_idVehicle) == _owner,
             "The vehicle has already been taken by another user"
         );
         require(
@@ -112,17 +95,13 @@ contract MooveToken is ERC721, Ownable {
             "Doesn't have enough funds to buy this vehicle"
         );
 
-        _approve(msg.sender, _idVehicle, ownerVehicle);
+        _approve(msg.sender, _idVehicle, ownerOf(_idVehicle));
 
-        transferFrom(ownerVehicle, msg.sender, _idVehicle);
+        transferFrom(ownerOf(_idVehicle), msg.sender, _idVehicle);
 
-        detailsVehicle[_idVehicle].available = false;
-        detailsVehicle[_idVehicle].owner = msg.sender;
-        detailsVehicle[_idVehicle].willEndAt = block.timestamp + 1 days;
         availableVehicle[_idVehicle] = false;
+        detailsVehicle[_idVehicle].willEndAt = block.timestamp + 1 days;
         purchasedVehiclesByAccount[msg.sender].push(_idVehicle);
-
-        removeVehicleFromAllVehicleArray(_idVehicle);
 
         emit NFTVehicleBuyed(_idVehicle, msg.sender);
     }
@@ -133,125 +112,175 @@ contract MooveToken is ERC721, Ownable {
         uint256 _tokenId
     ) public override {
         super.transferFrom(_from, _to, _tokenId);
-        detailsVehicle[_tokenId].owner = _to;
         emit NFTVehicleTransferred(_tokenId, _from, _to);
     }
 
     function expiryCheck(uint256 _idVehicle) external onlyOwner {
-        bool found = false;
-        bool expired = false;
+        require(_idVehicle <= nextVehicleId, "Vehicle doesn't found");
 
-        for (uint256 i = 0; i < vehiclesPurchased.length; i++) {
-            if (vehiclesPurchased[i] == _idVehicle) {
-                found = true;
-                break;
-            }
-        }
+        bool expired = false;
 
         if (block.timestamp > detailsVehicle[_idVehicle].willEndAt) {
             expired = true;
         }
 
-        require(found == true, "Vehicle doesn't found");
         require(expired == true, "The subscription has not yet expired");
 
-        address ownerVehicle = detailsVehicle[_idVehicle].owner;
+        _approve(msg.sender, _idVehicle, ownerOf(_idVehicle));
 
-        removePurchasedVehicleByAccount(_idVehicle, ownerVehicle);
-
-        _approve(msg.sender, _idVehicle, ownerVehicle);
-
-        transferFrom(ownerVehicle, msg.sender, _idVehicle);
-
-        detailsVehicle[_idVehicle].available = true;
-        detailsVehicle[_idVehicle].owner = msg.sender;
-        detailsVehicle[_idVehicle].willEndAt = 0;
+        transferFrom(ownerOf(_idVehicle), msg.sender, _idVehicle);
 
         availableVehicle[_idVehicle] = true;
-
-        removeVehicleFromVehiclePurchasedArray(_idVehicle);
+        detailsVehicle[_idVehicle].willEndAt = 0;
 
         emit VehicleExpired(_idVehicle);
     }
 
-    function removeVehicleFromAllVehicleArray(uint256 _idVehicle) internal {
-        uint256 index;
-        bool found = false;
-        for (uint256 i = 0; i < allVehicle.length; i++) {
-            if (allVehicle[i] == _idVehicle) {
-                index = i;
-                found = true;
-                break;
+    function availableVehicleIds() public view returns (uint256[] memory) {
+        uint256 count = 0;
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] &&
+                isAuctionVehicle[allVehicle[i]] == false
+            ) {
+                count++;
             }
         }
-        require(found == true);
-        allVehicle[index] = allVehicle[allVehicle.length - 1];
-        allVehicle.pop();
-        vehiclesPurchased.push(_idVehicle);
-    }
 
-    function removeVehicleFromVehiclePurchasedArray(
-        uint256 _idVehicle
-    ) internal {
-        uint256 index;
-        bool found = false;
-        for (uint256 i = 0; i < vehiclesPurchased.length; i++) {
-            if (vehiclesPurchased[i] == _idVehicle) {
-                index = i;
-                found = true;
-                break;
+        uint256[] memory availableVehicles = new uint256[](count);
+        uint256 index = 0;
+
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] &&
+                isAuctionVehicle[allVehicle[i]] == false
+            ) {
+                availableVehicles[index] = allVehicle[i];
+                index++;
             }
         }
-        require(found == true);
-        vehiclesPurchased[index] = vehiclesPurchased[
-            vehiclesPurchased.length - 1
-        ];
-        vehiclesPurchased.pop();
-        allVehicle.push(_idVehicle);
+
+        return availableVehicles;
     }
 
-    function removePurchasedVehicleByAccount(
-        uint256 _idVehicle,
-        address _ownerNFT
-    ) internal {
-        uint256 index;
-        bool found = false;
-        for (
-            uint256 i = 0;
-            i < purchasedVehiclesByAccount[_ownerNFT].length;
-            i++
-        ) {
-            if (purchasedVehiclesByAccount[_ownerNFT][i] == _idVehicle) {
-                index = i;
-                found = true;
-                break;
+    function availableAuctionVehicleIds()
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256 count = 0;
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] &&
+                isAuctionVehicle[allVehicle[i]]
+            ) {
+                count++;
             }
         }
-        require(found == true);
-        purchasedVehiclesByAccount[_ownerNFT][
-            index
-        ] = purchasedVehiclesByAccount[_ownerNFT][
-            purchasedVehiclesByAccount[_ownerNFT].length - 1
-        ];
-        purchasedVehiclesByAccount[_ownerNFT].pop();
+
+        uint256[] memory availableAuctionVehicles = new uint256[](count);
+        uint256 index = 0;
+
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] &&
+                isAuctionVehicle[allVehicle[i]]
+            ) {
+                availableAuctionVehicles[index] = allVehicle[i];
+                index++;
+            }
+        }
+
+        return availableAuctionVehicles;
     }
 
-    function arrayVehicleIds() public view returns (uint256[] memory) {
-        return allVehicle;
+    function purchasedVehicleIds() public view returns (uint256[] memory) {
+        uint256 count = 0;
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] == false &&
+                isAuctionVehicle[allVehicle[i]] == false
+            ) {
+                count++;
+            }
+        }
+
+        uint256[] memory purchasedVehicle = new uint256[](count);
+        uint256 index = 0;
+
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] == false &&
+                isAuctionVehicle[allVehicle[i]] == false
+            ) {
+                purchasedVehicle[index] = allVehicle[i];
+                index++;
+            }
+        }
+
+        return purchasedVehicle;
     }
 
-    function arrayVehiclesPurchased() public view returns (uint256[] memory) {
-        return vehiclesPurchased;
+    function purchasedAuctionVehicleIds()
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256 count = 0;
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] == false &&
+                isAuctionVehicle[allVehicle[i]]
+            ) {
+                count++;
+            }
+        }
+
+        uint256[] memory purchasedAuctionVehicle = new uint256[](count);
+        uint256 index = 0;
+
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] == false &&
+                isAuctionVehicle[allVehicle[i]]
+            ) {
+                purchasedAuctionVehicle[index] = allVehicle[i];
+                index++;
+            }
+        }
+
+        return purchasedAuctionVehicle;
     }
 
-    function arrayPurchasedVehiclesByAddress(
+    function purchasedVehiclesByAddress(
         address _account
     ) public view returns (uint256[] memory) {
-        return purchasedVehiclesByAccount[_account];
-    }
+        uint256 count = 0;
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] == false &&
+                ownerOf(allVehicle[i]) == _account &&
+                isAuctionVehicle[allVehicle[i]] == false
+            ) {
+                count++;
+            }
+        }
 
-    function arrayAuctionsVehicles() public view returns (uint256[] memory) {
-        return allAuctionsVehicles;
+        uint256[] memory purchasedVehicleByAddress = new uint256[](count);
+        uint256 index = 0;
+
+        for (uint i = 0; i < allVehicle.length; i++) {
+            if (
+                availableVehicle[allVehicle[i]] == false &&
+                ownerOf(allVehicle[i]) == _account &&
+                isAuctionVehicle[allVehicle[i]] == false
+            ) {
+                purchasedVehicleByAddress[index] = allVehicle[i];
+                index++;
+            }
+        }
+
+        return purchasedVehicleByAddress;
     }
 
     function getCurrentTimestamp() public view returns (uint256) {
