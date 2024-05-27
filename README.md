@@ -105,9 +105,9 @@ To install and test this project locally, follow these steps:
 
 A blockchain, from a logical point of view, is nothing more than a "finite state machine", which in technical jargon refers to a system that can exist in a finite number of possible states and changes state only in the presence of a specific predictable event. In our case, only one `transaction` can change the state of the blockchain. When we go to write a smart contract in our local project, we will have to remember to manually mark the `nonce` property, this is because being local we will be the ones to mark the transaction number, starting from 1. This step is essential to ensure that in our local blockchain state changes occur.
 
-<img src="./frontend/src/assets/Screenshot 2024-05-17 152551.png" width="300px">
+<img src="./frontend/src/assets/Screenshot 2024-05-17 152551.png" width="auto">
 
-**_Example, in the Account page, before adding a vehicle mark the nonce property_**
+**_Example: in the Account page before adding a vehicle mark the nonce property_**
 
 ## Implementing a Keeper
 
